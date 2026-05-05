@@ -6,37 +6,37 @@
     <title>Tamil Nadu Coastal Intelligence Hub</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { margin: 0; background: #0f1215; color: #e0e0e0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; }
+        body { margin: 0; background: #0f1215; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
         #map { height: 100vh; width: 100%; z-index: 1; }
         
         /* Tactical Sidebar */
         #sidebar { 
-            position: absolute; top: 10px; right: 10px; width: 300px; 
-            max-height: 90vh; background: rgba(20, 24, 28, 0.95); z-index: 1000;
+            position: absolute; top: 10px; right: 10px; width: 320px; 
+            max-height: 90vh; background: rgba(15, 18, 21, 0.98); z-index: 1000;
             border: 1px solid #3498db; border-radius: 8px; padding: 15px;
-            transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: 0.3s; box-shadow: 0 4px 20px rgba(0,0,0,0.8);
             display: flex; flex-direction: column;
         }
-        #sidebar.minimized { width: 40px; height: 40px; overflow: hidden; padding: 5px; }
-        .toggle-btn { cursor: pointer; color: #3498db; font-weight: bold; margin-bottom: 10px; display: block; border-bottom: 1px solid #2c3e50; padding-bottom: 5px; }
         
-        #beach-list { overflow-y: auto; flex-grow: 1; }
+        .toggle-btn { cursor: pointer; color: #3498db; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #2c3e50; padding-bottom: 5px; }
+        
+        #content-area { overflow-y: auto; flex-grow: 1; }
+        
+        /* List View Styles */
         .beach-link { 
-            display: block; padding: 10px; margin: 8px 0; background: #1c2229;
-            border-left: 3px solid #3498db; cursor: pointer; font-size: 0.85rem;
-            transition: 0.2s;
+            display: block; padding: 12px; margin: 8px 0; background: #1c2229;
+            border-left: 3px solid #3498db; cursor: pointer; font-size: 0.9rem;
         }
-        .beach-link:hover { background: #2c3e50; border-left: 3px solid #f1c40f; }
-        
-        .danger-tag { color: #e74c3c; font-size: 0.7rem; display: block; margin-top: 4px; font-weight: bold; text-transform: uppercase; }
-        .time-tag { color: #2ecc71; font-size: 0.7rem; display: block; margin-top: 2px; }
-        
-        .back-btn { position: absolute; top: 10px; left: 50px; z-index: 1000; background: #1c2229; color: #3498db; padding: 8px 15px; text-decoration: none; border-radius: 4px; border: 1px solid #3498db; font-size: 0.8rem; font-weight: bold; }
-        .back-btn:hover { background: #3498db; color: white; }
+        .beach-link:hover { background: #2c3e50; }
 
-        /* Custom Popup Styling */
-        .leaflet-popup-content-wrapper { background: #1c2229; color: white; border: 1px solid #3498db; }
-        .leaflet-popup-tip { background: #3498db; }
+        /* Description Bar Styles */
+        .intel-header { color: #f1c40f; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #f1c40f; padding-bottom: 5px; }
+        .section-title { color: #3498db; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; margin-top: 12px; display: block; }
+        .intel-text { font-size: 0.85rem; line-height: 1.4; margin-bottom: 5px; color: #ced4da; }
+        .danger-box { background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; padding: 8px; margin-top: 10px; border-radius: 4px; }
+        .exit-footer { font-size: 0.75rem; color: #7f8c8d; text-align: center; margin-top: 15px; font-style: italic; border-top: 1px solid #2c3e50; padding-top: 10px; }
+
+        .back-btn { position: absolute; top: 10px; left: 50px; z-index: 1000; background: #1c2229; color: #3498db; padding: 8px 15px; text-decoration: none; border-radius: 4px; border: 1px solid #3498db; font-size: 0.8rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -44,9 +44,9 @@
     <a href="../index.html" class="back-btn">← COMMAND CENTER</a>
 
     <div id="sidebar">
-        <span class="toggle-btn" onclick="document.getElementById('sidebar').classList.toggle('minimized')">☰ REGIONAL INDEX</span>
-        <div id="beach-list">
-            <!-- JavaScript populates this list automatically -->
+        <span class="toggle-btn" id="sidebar-title" onclick="showList()">☰ REGIONAL INDEX</span>
+        <div id="content-area">
+            <!-- Populated by JS -->
         </div>
     </div>
 
@@ -54,57 +54,106 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initial view shows the full Tamil Nadu coastline
-        var map = L.map('map', { zoomControl: false }).setView([11.5, 79.5], 7);
+        var map = L.map('map', { zoomControl: false }).setView([12.95, 80.27], 11);
         L.control.zoom({ position: 'topleft' }).addTo(map);
 
-        // Dark Tactical Map Tiles
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-            attribution: '© OpenStreetMap | Coastal Intelligence'
-        }).addTo(map);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-        // Unified Coastal Intelligence Data
         const beachData = [
-            { name: "Marina", coords: [13.0500, 80.2824], danger: "Extreme Rips / Steep Drop-offs", time: "6:30 AM (Incoming Tide)" },
-            { name: "Adyar River Mouth", coords: [13.0125, 80.2755], danger: "High-Velocity Outflow / Shifting Sand", time: "Low Tide (Scouting Only)" },
-            { name: "Besant Nagar", coords: [12.9996, 80.2723], danger: "Current Siphons near Broken Bridge", time: "Early Morning (Offshore Winds)" },
-            { name: "Thiruvanmiyur", coords: [12.9700, 80.2600], danger: "Heavy Shorebreak / Spinal Hazard", time: "Mid-Tide Rising" },
-            { name: "Akkarai / VGP", coords: [12.9000, 80.2450], danger: "Submerged Granite Boulders", time: "Low Tide (To see hazards)" },
-            { name: "Kovalam", coords: [12.7888, 80.2511], danger: "Reef-break Rocks / Clashing Currents", time: "2 Hours Before High Tide" },
-            { name: "Mahabalipuram", coords: [12.616, 80.193], danger: "Submerged Temple Structures / Granite Slabs", time: "Mid-Tide (Rising)" },
-            { name: "Pondicherry Rock", coords: [11.934, 79.835], danger: "Sea Wall Turbulence / Sharp Oyster Beds", time: "Morning (Calm Water)" },
-            { name: "Nagapattinam", coords: [10.763, 79.851], danger: "Delta Siltation / Erratic Seabed", time: "High Tide (Stability)" },
-            { name: "Dhanushkodi", coords: [9.155, 79.434], danger: "Ghost Currents / Two-Sea Intersection", time: "Dawn (Maximum Visibility)" }
+            { 
+                name: "Kovalam", 
+                coords: [12.7888, 80.2511], 
+                tide: "Best at mid-to-high tide push. Low tide reveals dangerous rock heads.",
+                seasons: "Summer (April-Sept) offers consistent long-period swells. Monsoon (Oct-Dec) brings unpredictable wind-chop.",
+                stay: "Stay at surf schools along the north cove for direct sunrise access.",
+                avoid: "Avoid the 'Point' during high swell unless experienced; the hydraulic pull against rocks is extreme.",
+                crowds: "High (100+) on weekends; manageable (10-15) on weekday dawns."
+            },
+            { 
+                name: "Mahabalipuram", 
+                coords: [12.616, 80.193], 
+                tide: "Incoming tide is essential to clear the submerged granite ruins.",
+                seasons: "Best 'Right Point' waves in June/July. Stronger currents in November.",
+                stay: "Guesthouses near the Shore Temple offer the best tactical vantage point.",
+                avoid: "Do not swim near the temple rocks; the backwash creates a vacuum effect.",
+                crowds: "Tourist heavy; water density is low (mostly local surfers)."
+            },
+            { 
+                name: "Marina", 
+                coords: [13.0500, 80.2824], 
+                tide: "Avoid dead low tide; the drop-off becomes a vertical sand wall.",
+                seasons: "Summer provides shorebreak fun. Monsoon makes the rip currents life-threatening.",
+                stay: "Stay inland (Mylapore) for safety; no beachfront lodging allowed.",
+                avoid: "Never enter more than waist-deep; the sand shelf shifts daily.",
+                crowds: "Extreme (Thousands). Early morning is the only window for peace."
+            }
         ];
 
-        const listContainer = document.getElementById('beach-list');
+        const contentArea = document.getElementById('content-area');
+        const sidebarTitle = document.getElementById('sidebar-title');
 
-        beachData.forEach(beach => {
-            // 1. Add Intelligence Marker
-            L.marker(beach.coords).addTo(map)
-                .bindPopup(`
-                    <strong style="color:#3498db; font-size:1.1rem;">${beach.name}</strong><br><br>
-                    <b style="color:#e74c3c;">DANGER:</b> ${beach.danger}<br>
-                    <b style="color:#2ecc71;">BEST ARRIVAL:</b> ${beach.time}
-                `);
+        // Initial List View
+        function showList() {
+            sidebarTitle.innerText = "☰ REGIONAL INDEX";
+            contentArea.innerHTML = "";
+            beachData.forEach(beach => {
+                const link = document.createElement('div');
+                link.className = 'beach-link';
+                link.innerText = beach.name.toUpperCase();
+                link.onclick = (e) => { e.stopPropagation(); selectBeach(beach); };
+                contentArea.appendChild(link);
+            });
+        }
 
-            // 2. Add to Automated Sidebar Index
-            const item = document.createElement('div');
-            item.className = 'beach-link';
-            item.innerHTML = `
-                ${beach.name.toUpperCase()}
-                <span class="danger-tag">${beach.danger.split(' / ')[0]}</span>
-                <span class="time-tag">⏱ ${beach.time}</span>
+        // Detailed Description View
+        function selectBeach(beach) {
+            map.flyTo(beach.coords, 15);
+            sidebarTitle.innerText = "← BACK TO LIST";
+            contentArea.innerHTML = `
+                <div class="intel-header">${beach.name}</div>
+                <span class="section-title">Tide Intelligence</span>
+                <p class="intel-text">${beach.tide}</p>
+                
+                <span class="section-title">Seasonal Shifts</span>
+                <p class="intel-text">${beach.seasons}</p>
+                
+                <span class="section-title">Logistics (Where to Stay)</span>
+                <p class="intel-text">${beach.stay}</p>
+                
+                <span class="section-title">Expected Crowd</span>
+                <p class="intel-text">${beach.crowds}</p>
+
+                <div class="danger-box">
+                    <span class="section-title" style="color:#ff4d4d; margin-top:0;">DANGER MITIGATION</span>
+                    <p class="intel-text">${beach.avoid}</p>
+                </div>
+                
+                <div class="exit-footer">Click anywhere else on the map to exit the description</div>
             `;
-            item.onclick = () => {
-                map.flyTo(beach.coords, 14, { duration: 2 });
-            };
-            listContainer.appendChild(item);
+        }
+
+        // Setup Markers
+        beachData.forEach(beach => {
+            const marker = L.marker(beach.coords).addTo(map);
+            
+            // Hover: Show simple popup
+            marker.on('mouseover', function(e) {
+                this.bindPopup(`<b>${beach.name}</b>`).openPopup();
+            });
+            
+            // Click: Fly and show Intel Bar
+            marker.on('click', function(e) {
+                L.DomEvent.stopPropagation(e);
+                selectBeach(beach);
+            });
         });
 
-        function flyTo(lat, lng) {
-            map.flyTo([lat, lng], 14, { duration: 1.5 });
-        }
+        // Exit click listener
+        map.on('click', function() {
+            showList();
+        });
+
+        showList();
     </script>
 </body>
 </html>
