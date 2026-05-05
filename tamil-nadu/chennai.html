@@ -3,42 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chennai Coastal Intelligence | Tamil Nadu</title>
-    <!-- Leaflet CSS for the Map -->
+    <title>Chennai Coastal Intelligence</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-        body { margin: 0; background-color: #1a1d21; color: white; font-family: sans-serif; }
-        #map { height: 100vh; width: 100%; }
-        .back-btn {
-            position: absolute; top: 20px; left: 20px; z-index: 1000;
-            background: #2c3e50; color: white; padding: 10px 20px;
-            text-decoration: none; border-radius: 5px; border: 1px solid #3498db;
+        body { margin: 0; background: #0f1215; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        #map { height: 100vh; width: 100%; z-index: 1; }
+        
+        /* Tactical Sidebar */
+        #sidebar { 
+            position: absolute; top: 10px; right: 10px; width: 260px; 
+            background: rgba(20, 24, 28, 0.95); z-index: 1000;
+            border: 1px solid #3498db; border-radius: 8px; padding: 15px;
+            transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
+        #sidebar.minimized { width: 40px; height: 40px; overflow: hidden; padding: 5px; }
+        .toggle-btn { cursor: pointer; color: #3498db; font-weight: bold; margin-bottom: 10px; display: block; }
+        
+        .beach-link { 
+            display: block; padding: 8px; margin: 5px 0; background: #1c2229;
+            border-left: 3px solid #3498db; cursor: pointer; font-size: 0.9rem;
+        }
+        .beach-link:hover { background: #2c3e50; }
+        .danger-tag { color: #e74c3c; font-size: 0.75rem; display: block; margin-top: 4px; font-weight: bold; }
+        
+        .back-btn { position: absolute; top: 10px; left: 50px; z-index: 1000; background: #1c2229; color: #3498db; padding: 8px 15px; text-decoration: none; border-radius: 4px; border: 1px solid #3498db; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <a href="../index.html" class="back-btn">← Back to Command Center</a>
+    <a href="../index.html" class="back-btn">← COMMAND CENTER</a>
+
+    <div id="sidebar">
+        <span class="toggle-btn" onclick="document.getElementById('sidebar').classList.toggle('minimized')">☰ INDEX</span>
+        <div id="beach-list">
+            <div class="beach-link" onclick="flyTo(13.0500, 80.2824)">MARINA <span class="danger-tag">Extreme Rips / Drop-offs</span></div>
+            <div class="beach-link" onclick="flyTo(13.0125, 80.2755)">ADYAR RIVER MOUTH <span class="danger-tag">Shifting Sand / Outflow</span></div>
+            <div class="beach-link" onclick="flyTo(12.9996, 80.2723)">BESANT NAGAR <span class="danger-tag">Current Siphons</span></div>
+            <div class="beach-link" onclick="flyTo(12.9700, 80.2600)">THIRUVANMIYUR <span class="danger-tag">Deep Shorebreak</span></div>
+            <div class="beach-link" onclick="flyTo(12.9000, 80.2450)">AKKARAI / VGP <span class="danger-tag">Unmarked Rocks</span></div>
+            <div class="beach-link" onclick="flyTo(12.7888, 80.2511)">KOVALAM <span class="danger-tag">Reef / Rock Clashes</span></div>
+        </div>
+    </div>
+
     <div id="map"></div>
 
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Initialize map centered on Chennai coast
-        var map = L.map('map').setView([12.98, 80.25], 12);
+        var map = L.map('map', { zoomControl: false }).setView([12.95, 80.27], 11);
+        L.control.zoom({ position: 'topleft' }).addTo(map);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(map);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-        // Marker 1: Kovalam (Surf Spot)
-        L.marker([12.7888, 80.2511]).addTo(map)
-            .bindPopup('<b>Kovalam Point Break</b><br>4-year surf zone. Watch for hydraulic clashes near the rocks.')
-            .openPopup();
+        const beachData = [
+            { name: "Marina", coords: [13.0500, 80.2824], danger: "High rip current risk during mid-tide. Steep under-shelf drop-offs." },
+            { name: "Adyar River Mouth", coords: [13.0125, 80.2755], danger: "Unstable sandbars. High velocity river outflow during monsoon/tides." },
+            { name: "Besant Nagar", coords: [12.9996, 80.2723], danger: "Crowd density interferes with safety lines. Strong lateral currents near the 'Broken Bridge' side." },
+            { name: "Thiruvanmiyur", coords: [12.9700, 80.2600], danger: "Heavy shorebreak can cause spinal injuries. Shifting sand levels weekly." },
+            { name: "Akkarai / VGP", coords: [12.9000, 80.2450], danger: "Submerged granite boulders. Low visibility currents." },
+            { name: "Kovalam", coords: [12.7888, 80.2511], danger: "Reef-break rocks. Hydraulic clashes where currents meet the bay curve." }
+        ];
 
-        // Marker 2: Adyar River Mouth
-        L.marker([13.0125, 80.2755]).addTo(map)
-            .bindPopup('<b>Adyar River Mouth</b><br>High-velocity outflow. Sandbar variance monitored.');
+        beachData.forEach(beach => {
+            L.marker(beach.coords).addTo(map)
+                .bindPopup(`<b>${beach.name}</b><br><span style="color:red">DANGER:</span> ${beach.danger}`);
+        });
+
+        function flyTo(lat, lng) {
+            map.flyTo([lat, lng], 15, { duration: 1.5 });
+        }
     </script>
 </body>
 </html>
