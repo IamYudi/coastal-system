@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chennai Coastal Intelligence | Tamil Nadu</title>
+    <!-- Leaflet CSS for the Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { margin: 0; background-color: #1a1d21; color: white; font-family: sans-serif; }
+        #map { height: 100vh; width: 100%; }
+        .back-btn {
+            position: absolute; top: 20px; left: 20px; z-index: 1000;
+            background: #2c3e50; color: white; padding: 10px 20px;
+            text-decoration: none; border-radius: 5px; border: 1px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="../index.html" class="back-btn">← Back to Command Center</a>
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialize map centered on Chennai coast
+        var map = L.map('map').setView([12.98, 80.25], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // Marker 1: Kovalam (Surf Spot)
+        L.marker([12.7888, 80.2511]).addTo(map)
+            .bindPopup('<b>Kovalam Point Break</b><br>4-year surf zone. Watch for hydraulic clashes near the rocks.')
+            .openPopup();
+
+        // Marker 2: Adyar River Mouth
+        L.marker([13.0125, 80.2755]).addTo(map)
+            .bindPopup('<b>Adyar River Mouth</b><br>High-velocity outflow. Sandbar variance monitored.');
+    </script>
+</body>
+</html>
