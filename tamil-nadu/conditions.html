@@ -6,77 +6,75 @@
     <title>Live Coastal Conditions | Chennai</title>
     <style>
         body { background: #0f1215; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        
+        /* Top Navigation */
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .gov-link { background: #c0392b; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-size: 0.8rem; font-weight: bold; border: 1px solid #ff4d4d; }
+        .gov-link:hover { background: #e74c3c; }
+
+        /* Dropdown Styling */
+        #api-selector { background: #1c2229; color: #3498db; border: 1px solid #3498db; padding: 10px; border-radius: 4px; cursor: pointer; }
+
         .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .card { background: rgba(28, 34, 41, 0.9); border: 1px solid #3498db; border-radius: 8px; padding: 20px; position: relative; }
-        .card-header { color: #3498db; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; border-bottom: 1px solid #2c3e50; padding-bottom: 10px; }
-        .data-value { font-size: 2.5rem; font-weight: bold; color: #fff; display: flex; align-items: baseline; }
-        .unit { font-size: 1rem; color: #7f8c8d; margin-left: 5px; }
-        .back-btn { display: inline-block; margin-bottom: 20px; color: #3498db; text-decoration: none; font-weight: bold; }
-        
-        /* Tide Indicator Visual */
-        .tide-visual { height: 100px; background: #1c2229; border-radius: 4px; position: relative; overflow: hidden; margin-top: 15px; border: 1px solid #2c3e50; }
-        .water-level { position: absolute; bottom: 0; width: 100%; background: linear-gradient(transparent, #3498db); height: 60%; transition: height 1s; }
-        
-        .metric-row { display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.9rem; }
-        .label { color: #7f8c8d; }
-        .value { color: #2ecc71; font-weight: bold; }
+        .card { background: rgba(28, 34, 41, 0.9); border: 1px solid #3498db; border-radius: 8px; padding: 20px; }
+        .card-header { color: #3498db; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #2c3e50; padding-bottom: 10px; }
+        .data-value { font-size: 2.5rem; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <a href="chennai.html" class="back-btn">← BACK TO INTELLIGENCE MAP</a>
+    <div class="top-nav">
+        <a href="chennai.html" style="color: #3498db; text-decoration: none;">← MAP VIEW</a>
+        
+        <div class="controls">
+            <select id="api-selector" onchange="updateDataSource()">
+                <option value="stormglass">Engine: StormGlass (Primary Marine)</option>
+                <option value="openweather">Engine: OpenWeather (Atmospheric)</option>
+            </select>
+        </div>
+
+        <!-- VERIFIED GOVERNMENT LINK -->
+        <a href="https://incois.gov.in/portal/osf/osf.jsp" target="_blank" class="gov-link">
+            EXTERNAL: OFFICIAL INCOIS FORECAST ↗
+        </a>
+    </div>
 
     <div class="dashboard">
         <!-- TIDE CARD -->
         <div class="card">
             <div class="card-header">Live Tide Status</div>
-            <div class="data-value">1.2<span class="unit">m</span></div>
-            <div class="metric-row">
-                <span class="label">Phase</span>
-                <span class="value" style="color: #f1c40f;">Rising (Inflow)</span>
-            </div>
-            <div class="tide-visual">
-                <div class="water-level"></div>
-            </div>
-            <div class="metric-row" style="margin-top: 15px;">
-                <span class="label">Next High Tide</span>
-                <span class="value">18:45 IST</span>
-            </div>
+            <div id="tide-val" class="data-value">--<span style="font-size: 1rem; color: #7f8c8d;">m</span></div>
+            <p id="tide-source" style="font-size: 0.7rem; color: #555;">Select source to pull data</p>
         </div>
 
-        <!-- WAVE/SWELL CARD -->
+        <!-- SWELL CARD -->
         <div class="card" style="border-color: #2ecc71;">
             <div class="card-header" style="color: #2ecc71;">Swell Intelligence</div>
-            <div class="data-value">0.9<span class="unit">m</span></div>
-            
-            <div class="metric-row">
-                <span class="label">Swell Period</span>
-                <span class="value">10.2s</span>
-            </div>
-            <div class="metric-row">
-                <span class="label">Swell Direction</span>
-                <span class="value">ESE (115°)</span>
-            </div>
-            <div class="metric-row" style="margin-top: 15px; border-top: 1px solid #2c3e50; padding-top: 10px;">
-                <span class="label">Primary Energy</span>
-                <span class="value" style="color: #fff;">Groundswell</span>
-            </div>
-        </div>
-
-        <!-- WIND CARD -->
-        <div class="card" style="border-color: #e67e22;">
-            <div class="card-header" style="color: #e67e22;">Atmospheric Wind</div>
-            <div class="data-value">14<span class="unit">kts</span></div>
-            <div class="metric-row">
-                <span class="label">Direction</span>
-                <span class="value">NE (Offshore)</span>
-            </div>
-            <div class="metric-row">
-                <span class="label">Gusting</span>
-                <span class="value">18kts</span>
-            </div>
+            <div id="swell-val" class="data-value">--<span style="font-size: 1rem; color: #7f8c8d;">m</span></div>
+            <p id="swell-source" style="font-size: 0.7rem; color: #555;">Waiting for engine command...</p>
         </div>
     </div>
 
+    <script>
+        function updateDataSource() {
+            const source = document.getElementById('api-selector').value;
+            const tideVal = document.getElementById('tide-val');
+            const swellVal = document.getElementById('swell-val');
+
+            if (source === 'stormglass') {
+                // Mock data for now - This is where the Fetch code goes
+                tideVal.innerHTML = "1.1<span style='font-size: 1rem;'>m</span>";
+                swellVal.innerHTML = "0.9<span style='font-size: 1rem;'>m</span>";
+                document.getElementById('tide-source').innerText = "Source: StormGlass.io (Sourced from global buoys)";
+            } else {
+                tideVal.innerHTML = "1.3<span style='font-size: 1rem;'>m</span>";
+                swellVal.innerHTML = "0.6<span style='font-size: 1rem;'>m</span>";
+                document.getElementById('tide-source').innerText = "Source: OpenWeather (Sourced from airport stations)";
+            }
+        }
+        
+        // Run once on load
+        updateDataSource();
+    </script>
 </body>
 </html>
