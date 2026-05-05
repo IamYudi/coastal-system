@@ -48,71 +48,125 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        var map = L.map('map', { zoomControl: false }).setView([12.95, 80.27], 11);
-        L.control.zoom({ position: 'topleft' }).addTo(map);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+    var map = L.map('map', { zoomControl: false }).setView([12.95, 80.27], 10);
+    L.control.zoom({ position: 'topleft' }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-        const beachData = [
-            { 
-                name: "Kovalam", 
-                coords: [12.7888, 80.2511], 
-                tide: "Best at mid-to-high tide push. Low tide reveals dangerous rock heads.",
-                seasons: "Summer (April-Sept) offers consistent swells. Monsoon (Oct-Dec) brings unpredictable wind-chop.",
-                stay: "Stay at surf schools along the north cove for direct sunrise access.",
-                avoid: "Avoid the 'Point' during high swell; hydraulic pull is extreme.",
-                crowds: "High (100+) on weekends; manageable (10-15) on weekday dawns."
-            },
-            { 
-                name: "Mahabalipuram", 
-                coords: [12.616, 80.193], 
-                tide: "Incoming tide is essential to clear submerged granite ruins.",
-                seasons: "Best 'Right Point' waves in June/July.",
-                stay: "Guesthouses near Shore Temple for best tactical vantage.",
-                avoid: "Do not swim near temple rocks; backwash creates vacuum effect.",
-                crowds: "Low surfer density; high tourist volume."
-            }
-        ];
-
-        const contentArea = document.getElementById('content-area');
-        const sidebarTitle = document.getElementById('sidebar-title');
-
-        function showList() {
-            sidebarTitle.innerText = "☰ REGIONAL INDEX";
-            contentArea.innerHTML = "";
-            beachData.forEach(beach => {
-                const link = document.createElement('div');
-                link.className = 'beach-link';
-                link.innerText = beach.name.toUpperCase();
-                link.onclick = (e) => { e.stopPropagation(); selectBeach(beach); };
-                contentArea.appendChild(link);
-            });
+    const beachData = [
+        { 
+            name: "Ennore Creek", 
+            coords: [13.2201, 80.3233], 
+            tide: "Best at incoming mid-tide. Low tide exposes heavy industrial silt and debris.",
+            seasons: "Monsoon (Oct-Dec) is dangerous due to river runoff and unpredictable currents.",
+            stay: "Limited local options; stay in North Chennai/Manali for early access.",
+            avoid: "High industrial pollution; avoid water contact after heavy rains.",
+            crowds: "Very low; mostly local fishermen."
+        },
+        { 
+            name: "Marina Beach", 
+            coords: [13.0500, 80.2824], 
+            tide: "Incoming tide creates a heavy shorebreak. The drop-off is sudden.",
+            seasons: "Summer (April-Aug) is relatively calm. Monsoon creates lethal rip currents.",
+            stay: "Stay in Mylapore or Santhome for the closest tactical proximity.",
+            avoid: "Do not venture deep; the shelf shift is aggressive and unpredictable.",
+            crowds: "Extreme (Thousands). Scouting must be done at dawn (05:00)."
+        },
+        { 
+            name: "Elliot's (Besant Nagar)", 
+            coords: [13.0012, 80.2748], 
+            tide: "Best at high tide push. The sandbar at the southern end is key.",
+            seasons: "Consistent shorebreak in Summer months.",
+            stay: "Excellent boutique stays and Airbnbs directly in Besant Nagar.",
+            avoid: "Watch for the storm water drain area during Monsoon—currents swirl here.",
+            crowds: "High on evenings; moderate during early mornings."
+        },
+        { 
+            name: "Thiruvanmiyur", 
+            coords: [12.9830, 80.2680], 
+            tide: "Cleanest at mid-tide. Low tide creates a wide, flat 'mushy' wave.",
+            seasons: "Good for longboarding in the transition months (Sept-Oct).",
+            stay: "High-end residential area; plenty of private rental options.",
+            avoid: "Stray dogs can be territorial in the early hours.",
+            crowds: "Moderate; popular with local runners and fitness groups."
+        },
+        { 
+            name: "Kottivakkam/Palavakkam", 
+            coords: [12.9650, 80.2580], 
+            tide: "Similar to Thiruvanmiyur; requires a strong swell to work.",
+            seasons: "Best 'ground swells' hit here during mid-summer.",
+            stay: "Stay in ECR-adjacent villas for the best logistics.",
+            avoid: "Hidden debris in the sand—footwear recommended until the shoreline.",
+            crowds: "Low to Moderate; very peaceful on weekdays."
+        },
+        { 
+            name: "Kovalam (Covelong)", 
+            coords: [12.7888, 80.2511], 
+            tide: "The Point works best at mid-to-high. The Bay is safe at all tides.",
+            seasons: "April to Sept is prime surf season. October brings wind-swell.",
+            stay: "Dedicated surf camps and luxury resorts (Taj) right on the cove.",
+            avoid: "Rocks at the north point. Do not surf the point alone without scouting.",
+            crowds: "High. The primary hub for the regional surf community."
+        },
+        { 
+            name: "Muttukadu", 
+            coords: [12.8250, 80.2450], 
+            tide: "The river mouth creates a unique sandbar that shifts every month.",
+            seasons: "Highly dependent on the river mouth being open or closed.",
+            stay: "Boating resorts nearby; good for quick tactical stopovers.",
+            avoid: "Strong back-currents near the bridge pylons.",
+            crowds: "Low on the beach side; high on the backwater side."
+        },
+        { 
+            name: "Mahabalipuram", 
+            coords: [12.616, 80.193], 
+            tide: "Incoming tide is mandatory to surf over the granite ruins safely.",
+            seasons: "World-class 'Right Point' waves in June/July.",
+            stay: "Backpacker hostels and guesthouses near the Shore Temple.",
+            avoid: "Granite boulders underwater. Getting caught inside is a physical hazard.",
+            crowds: "Tourist heavy on land; water is usually just 5-10 surfers."
         }
+    ];
 
-        function selectBeach(beach) {
-            map.flyTo(beach.coords, 15);
-            sidebarTitle.innerText = "← BACK TO LIST";
-            contentArea.innerHTML = `
-                <div class="intel-header">${beach.name}</div>
-                <span class="section-title">Tide Intelligence</span><p class="intel-text">${beach.tide}</p>
-                <span class="section-title">Seasonal Shifts</span><p class="intel-text">${beach.seasons}</p>
-                <span class="section-title">Logistics</span><p class="intel-text">${beach.stay}</p>
-                <span class="section-title">Expected Crowd</span><p class="intel-text">${beach.crowds}</p>
-                <div class="danger-box">
-                    <span class="section-title" style="color:#ff4d4d; margin-top:0;">DANGER MITIGATION</span>
-                    <p class="intel-text">${beach.avoid}</p>
-                </div>
-                <div class="exit-footer">Click anywhere else on the map to exit the description</div>
-            `;
-        }
+    const contentArea = document.getElementById('content-area');
+    const sidebarTitle = document.getElementById('sidebar-title');
 
+    function showList() {
+        sidebarTitle.innerText = "☰ REGIONAL INDEX";
+        contentArea.innerHTML = "";
         beachData.forEach(beach => {
-            const marker = L.marker(beach.coords).addTo(map);
-            marker.on('mouseover', function() { this.bindPopup(`<b>${beach.name}</b>`).openPopup(); });
-            marker.on('click', function(e) { L.DomEvent.stopPropagation(e); selectBeach(beach); });
+            const link = document.createElement('div');
+            link.className = 'beach-link';
+            link.innerText = beach.name.toUpperCase();
+            link.onclick = (e) => { e.stopPropagation(); selectBeach(beach); };
+            contentArea.appendChild(link);
         });
+    }
 
-        map.on('click', function() { showList(); });
-        showList();
-    </script>
+    function selectBeach(beach) {
+        map.flyTo(beach.coords, 14);
+        sidebarTitle.innerText = "← BACK TO LIST";
+        contentArea.innerHTML = `
+            <div class="intel-header">${beach.name}</div>
+            <span class="section-title">Tide Intelligence</span><p class="intel-text">${beach.tide}</p>
+            <span class="section-title">Seasonal Shifts</span><p class="intel-text">${beach.seasons}</p>
+            <span class="section-title">Logistics</span><p class="intel-text">${beach.stay}</p>
+            <span class="section-title">Expected Crowd</span><p class="intel-text">${beach.crowds}</p>
+            <div class="danger-box">
+                <span class="section-title" style="color:#ff4d4d; margin-top:0;">DANGER MITIGATION</span>
+                <p class="intel-text">${beach.avoid}</p>
+            </div>
+            <div class="exit-footer">Click anywhere else on the map to exit</div>
+        `;
+    }
+
+    beachData.forEach(beach => {
+        const marker = L.marker(beach.coords).addTo(map);
+        marker.on('mouseover', function() { this.bindPopup(`<b>${beach.name}</b>`).openPopup(); });
+        marker.on('click', function(e) { L.DomEvent.stopPropagation(e); selectBeach(beach); });
+    });
+
+    map.on('click', function() { showList(); });
+    showList();
+</script>
 </body>
 </html>
