@@ -4,22 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Coastal Conditions | Chennai</title>
-    <style>
-        body { background: #0f1215; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+    <!-- Add these rows inside your Swell and Wind cards -->
+<div class="metric-row">
+    <span class="label">Wave Duration (Period)</span>
+    <span id="wave-period" class="value">--s</span>
+</div>
+<div class="metric-row">
+    <span class="label">Wind Speed</span>
+    <span id="wind-spd" class="value">--kts</span>
+</div>
+
+<!-- TOP STATUS BAR (Add below the dropdown) -->
+<div style="font-size: 0.75rem; color: #7f8c8d; margin-top: 10px;">
+    Last Update: <span id="last-updated" style="color: #3498db;">--:--:--</span> | 
+    Next Update In: <span id="next-update" style="color: #f1c40f;">30:00</span>
+</div>
+
+<script>
+    let timeLeft = 1800; // 30 minutes in seconds
+
+    function updateDashboard() {
+        const source = document.getElementById('api-selector').value;
+        const now = new Date();
         
-        /* Top Navigation */
-        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .gov-link { background: #c0392b; color: white; padding: 8px 15px; border-radius: 4px; text-decoration: none; font-size: 0.8rem; font-weight: bold; border: 1px solid #ff4d4d; }
-        .gov-link:hover { background: #e74c3c; }
+        // Update Timestamps
+        document.getElementById('last-updated').innerText = now.toLocaleTimeString();
+        timeLeft = 1800; // Reset timer to 30 mins
 
-        /* Dropdown Styling */
-        #api-selector { background: #1c2229; color: #3498db; border: 1px solid #3498db; padding: 10px; border-radius: 4px; cursor: pointer; }
+        // Mock Logic (Replace with actual fetch later)
+        if (source === 'stormglass') {
+            document.getElementById('tide-val').innerHTML = "1.1<span class='unit'>m</span>";
+            document.getElementById('swell-val').innerHTML = "0.9<span class='unit'>m</span>";
+            document.getElementById('wave-period').innerText = "10.5s";
+            document.getElementById('wind-spd').innerText = "12kts";
+        } else {
+            document.getElementById('tide-val').innerHTML = "1.3<span class='unit'>m</span>";
+            document.getElementById('swell-val').innerHTML = "0.7<span class='unit'>m</span>";
+            document.getElementById('wave-period').innerText = "6.2s";
+            document.getElementById('wind-spd').innerText = "15kts";
+        }
+    }
 
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
-        .card { background: rgba(28, 34, 41, 0.9); border: 1px solid #3498db; border-radius: 8px; padding: 20px; }
-        .card-header { color: #3498db; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #2c3e50; padding-bottom: 10px; }
-        .data-value { font-size: 2.5rem; font-weight: bold; }
-    </style>
+    // Countdown Timer Logic
+    setInterval(function() {
+        timeLeft--;
+        if (timeLeft <= 0) {
+            updateDashboard();
+        }
+        
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        document.getElementById('next-update').innerText = 
+            `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }, 1000);
+
+    // Initial Trigger
+    updateDashboard();
+</script>
 </head>
 <body>
 
