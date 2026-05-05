@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Coastal Conditions | Chennai</title>
+    <title>Live Coastal Intelligence | Chennai</title>
     <style>
         :root {
             --primary: #3498db;
@@ -22,112 +22,34 @@
             margin: 0;
         }
 
-        /* Navigation Header */
-        .top-nav { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
         .back-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; }
-        
-        .gov-link { 
-            background: #c0392b; 
-            color: white; 
-            padding: 10px 15px; 
-            border-radius: 4px; 
-            text-decoration: none; 
-            font-size: 0.75rem; 
-            font-weight: bold;
-            border: 1px solid var(--danger);
-        }
+        .gov-link { background: #c0392b; color: white; padding: 10px 15px; border-radius: 4px; text-decoration: none; font-size: 0.75rem; font-weight: bold; border: 1px solid var(--danger); }
 
-        /* Status & Controls */
         .controls { background: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #2c3e50; }
-        
-        select { 
-            background: #1c2229; 
-            color: var(--primary); 
-            border: 1px solid var(--primary); 
-            padding: 8px; 
-            border-radius: 4px; 
-            outline: none;
-        }
+        select { background: #1c2229; color: var(--primary); border: 1px solid var(--primary); padding: 8px; border-radius: 4px; outline: none; cursor: pointer; }
 
         .status-bar { font-size: 0.75rem; color: #7f8c8d; margin-top: 10px; display: flex; gap: 15px; }
 
-        /* Dashboard Grid */
-        .dashboard { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 20px; 
-            max-width: 1200px; 
-        }
-
-        .card { 
-            background: var(--card-bg); 
-            border: 1px solid #2c3e50; 
-            border-radius: 12px; 
-            padding: 20px; 
-            position: relative;
-            overflow: hidden;
-        }
-
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; }
+        .card { background: var(--card-bg); border: 1px solid #2c3e50; border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
         .card.tide { border-top: 4px solid var(--primary); }
         .card.swell { border-top: 4px solid var(--success); }
         .card.wind { border-top: 4px solid #e67e22; }
 
-        .card-header { 
-            font-size: 0.7rem; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            color: #7f8c8d; 
-            margin-bottom: 15px;
-        }
-
+        .card-header { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: #7f8c8d; margin-bottom: 15px; }
         .data-main { display: flex; align-items: baseline; margin-bottom: 15px; }
         .value { font-size: 3rem; font-weight: bold; color: #fff; }
         .unit { font-size: 1.2rem; color: #7f8c8d; margin-left: 5px; }
 
-        .metric-row { 
-            display: flex; 
-            justify-content: space-between; 
-            padding: 8px 0; 
-            border-top: 1px solid #2c3e50;
-            font-size: 0.85rem;
-        }
-
+        .metric-row { display: flex; justify-content: space-between; padding: 8px 0; border-top: 1px solid #2c3e50; font-size: 0.85rem; }
         .label { color: #bdc3c7; }
         .stat { font-weight: bold; color: var(--success); }
 
-        /* VISUALIZATION: Tide Wave */
-        .wave-container {
-            height: 60px;
-            width: 100%;
-            background: #161b22;
-            margin-top: 10px;
-            border-radius: 6px;
-            position: relative;
-            overflow: hidden;
-        }
+        .wave-container { height: 60px; width: 100%; background: #161b22; margin-top: 10px; border-radius: 6px; position: relative; overflow: hidden; }
+        .wave { position: absolute; bottom: 0; width: 200%; height: 100%; background: rgba(52, 152, 219, 0.4); border-radius: 40%; animation: drift 10s infinite linear; transition: height 2s ease-in-out; }
 
-        .wave {
-            position: absolute;
-            bottom: 0;
-            width: 200%;
-            height: 100%;
-            background: rgba(52, 152, 219, 0.4);
-            border-radius: 40%;
-            animation: drift 10s infinite linear;
-        }
-
-        @keyframes drift {
-            from { transform: translateX(0) rotate(0deg); }
-            to { transform: translateX(-50%) rotate(360deg); }
-        }
+        @keyframes drift { from { transform: translateX(0) rotate(0deg); } to { transform: translateX(-50%) rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -140,12 +62,11 @@
     <div class="controls">
         <select id="api-selector" onchange="updateDashboard()">
             <option value="stormglass">Engine: StormGlass.io (Marine High-Res)</option>
-            <option value="openweather">Engine: OpenWeather (Standard)</option>
         </select>
         
         <div class="status-bar">
             <span>Last Update: <span id="last-updated" style="color: var(--primary);">--:--</span></span>
-            <span>Next Sync In: <span id="next-update" style="color: var(--warning);">30:00</span></span>
+            <span>Next Sync In: <span id="next-update" style="color: var(--warning);">60:00</span></span>
         </div>
     </div>
 
@@ -158,11 +79,11 @@
                 <span class="unit">m</span>
             </div>
             <div class="metric-row">
-                <span class="label">Phase</span>
-                <span id="tide-phase" class="stat">--</span>
+                <span class="label">Status</span>
+                <span id="tide-phase" class="stat">Ready</span>
             </div>
             <div class="wave-container">
-                <div class="wave" id="tide-visual-wave" style="height: 50%;"></div>
+                <div class="wave" id="tide-visual-wave" style="height: 30%;"></div>
             </div>
         </div>
 
@@ -178,7 +99,7 @@
                 <span id="wave-period" class="stat">--s</span>
             </div>
             <div class="metric-row">
-                <span class="label">Direction</span>
+                <span class="label">Swell Direction</span>
                 <span id="swell-dir" class="stat">--</span>
             </div>
         </div>
@@ -195,48 +116,78 @@
                 <span id="wind-desc" class="stat">--</span>
             </div>
             <div class="metric-row">
-                <span class="label">Direction</span>
+                <span class="label">Wind Direction</span>
                 <span id="wind-dir" class="stat">--</span>
             </div>
         </div>
     </div>
 
     <script>
-        let timeLeft = 1800; // 30 mins
+        const STORMGLASS_KEY_NAME = 'sg_api_key';
+        let timeLeft = 3600; // Updated to 1 Hour (3600 seconds)
+        const lat = 12.8105;
+        const lng = 80.2458;
 
-        function updateDashboard() {
-            const source = document.getElementById('api-selector').value;
+        function getApiKey() {
+            let key = localStorage.getItem(STORMGLASS_KEY_NAME);
+            if (!key) {
+                key = prompt("Enter StormGlass API Key (Daily limit: 10 requests):");
+                if (key) localStorage.setItem(STORMGLASS_KEY_NAME, key);
+            }
+            return key;
+        }
+
+        async function updateDashboard() {
+            const key = getApiKey();
+            if (!key) return;
+
             const now = new Date();
-            
             document.getElementById('last-updated').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            timeLeft = 1800; 
+            timeLeft = 3600; // Reset to 60 mins
 
-            // Logic to simulate different data flushes
-            if (source === 'stormglass') {
-                setValues("1.1", "Rising", "0.9", "10.5", "ESE", "12", "Offshore", "NE");
-                document.getElementById('tide-visual-wave').style.height = "70%";
-            } else {
-                setValues("1.4", "Peak", "0.6", "6.2", "E", "16", "Onshore", "E");
-                document.getElementById('tide-visual-wave').style.height = "90%";
+            try {
+                // Fetch Weather & Swell
+                const weatherRes = await fetch(`https://api.stormglass.io/v2/weather/point?lat=${lat}&lng=${lng}&params=waveHeight,swellPeriod,swellDirection,windSpeed,windDirection`, {
+                    headers: { 'Authorization': key }
+                });
+                const weatherData = await weatherRes.json();
+                const current = weatherData.hours[0];
+
+                // Fetch Tide
+                const tideRes = await fetch(`https://api.stormglass.io/v2/tide/extremes/point?lat=${lat}&lng=${lng}`, {
+                    headers: { 'Authorization': key }
+                });
+                const tideData = await tideRes.json();
+                const nextExtreme = tideData.data[0];
+
+                // Update UI
+                document.getElementById('tide-val').innerText = nextExtreme.height.toFixed(1);
+                document.getElementById('tide-phase').innerText = nextExtreme.type.toUpperCase();
+                document.getElementById('tide-visual-wave').style.height = (nextExtreme.height * 50 + 30) + "%";
+
+                document.getElementById('swell-val').innerText = current.waveHeight.noaa.toFixed(1);
+                document.getElementById('wave-period').innerText = current.swellPeriod.noaa.toFixed(1) + "s";
+                document.getElementById('swell-dir').innerText = getCardinal(current.swellDirection.noaa);
+
+                const kts = Math.round(current.windSpeed.noaa * 1.94);
+                document.getElementById('wind-spd').innerText = kts;
+                document.getElementById('wind-desc').innerText = kts < 10 ? "Light" : "Moderate";
+                document.getElementById('wind-dir').innerText = getCardinal(current.windDirection.noaa);
+
+            } catch (err) {
+                console.error("Sync Failed:", err);
+                document.getElementById('tide-phase').innerText = "LIMIT REACHED";
             }
         }
 
-        function setValues(tide, phase, swell, period, sDir, wSpd, wDesc, wDir) {
-            document.getElementById('tide-val').innerText = tide;
-            document.getElementById('tide-phase').innerText = phase;
-            document.getElementById('swell-val').innerText = swell;
-            document.getElementById('wave-period').innerText = period + "s";
-            document.getElementById('swell-dir').innerText = sDir;
-            document.getElementById('wind-spd').innerText = wSpd;
-            document.getElementById('wind-desc').innerText = wDesc;
-            document.getElementById('wind-dir').innerText = wDir;
+        function getCardinal(angle) {
+            const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+            return directions[Math.round(angle / 45) % 8];
         }
 
-        // Timer Logic
         setInterval(() => {
             timeLeft--;
             if (timeLeft <= 0) updateDashboard();
-            
             const m = Math.floor(timeLeft / 60);
             const s = timeLeft % 60;
             document.getElementById('next-update').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
