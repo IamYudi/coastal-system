@@ -9,7 +9,6 @@
         body { margin: 0; background: #0f1215; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
         #map { height: 100vh; width: 100%; z-index: 1; }
         
-        /* Tactical Sidebar */
         #sidebar { 
             position: absolute; top: 10px; right: 10px; width: 320px; 
             max-height: 90vh; background: rgba(15, 18, 21, 0.98); z-index: 1000;
@@ -19,17 +18,14 @@
         }
         
         .toggle-btn { cursor: pointer; color: #3498db; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #2c3e50; padding-bottom: 5px; }
-        
         #content-area { overflow-y: auto; flex-grow: 1; }
         
-        /* List View Styles */
         .beach-link { 
             display: block; padding: 12px; margin: 8px 0; background: #1c2229;
             border-left: 3px solid #3498db; cursor: pointer; font-size: 0.9rem;
         }
         .beach-link:hover { background: #2c3e50; }
 
-        /* Description Bar Styles */
         .intel-header { color: #f1c40f; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #f1c40f; padding-bottom: 5px; }
         .section-title { color: #3498db; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; margin-top: 12px; display: block; }
         .intel-text { font-size: 0.85rem; line-height: 1.4; margin-bottom: 5px; color: #ced4da; }
@@ -45,9 +41,7 @@
 
     <div id="sidebar">
         <span class="toggle-btn" id="sidebar-title" onclick="showList()">☰ REGIONAL INDEX</span>
-        <div id="content-area">
-            <!-- Populated by JS -->
-        </div>
+        <div id="content-area"></div>
     </div>
 
     <div id="map"></div>
@@ -56,7 +50,6 @@
     <script>
         var map = L.map('map', { zoomControl: false }).setView([12.95, 80.27], 11);
         L.control.zoom({ position: 'topleft' }).addTo(map);
-
         L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
 
         const beachData = [
@@ -64,35 +57,25 @@
                 name: "Kovalam", 
                 coords: [12.7888, 80.2511], 
                 tide: "Best at mid-to-high tide push. Low tide reveals dangerous rock heads.",
-                seasons: "Summer (April-Sept) offers consistent long-period swells. Monsoon (Oct-Dec) brings unpredictable wind-chop.",
+                seasons: "Summer (April-Sept) offers consistent swells. Monsoon (Oct-Dec) brings unpredictable wind-chop.",
                 stay: "Stay at surf schools along the north cove for direct sunrise access.",
-                avoid: "Avoid the 'Point' during high swell unless experienced; the hydraulic pull against rocks is extreme.",
+                avoid: "Avoid the 'Point' during high swell; hydraulic pull is extreme.",
                 crowds: "High (100+) on weekends; manageable (10-15) on weekday dawns."
             },
             { 
                 name: "Mahabalipuram", 
                 coords: [12.616, 80.193], 
-                tide: "Incoming tide is essential to clear the submerged granite ruins.",
-                seasons: "Best 'Right Point' waves in June/July. Stronger currents in November.",
-                stay: "Guesthouses near the Shore Temple offer the best tactical vantage point.",
-                avoid: "Do not swim near the temple rocks; the backwash creates a vacuum effect.",
-                crowds: "Tourist heavy; water density is low (mostly local surfers)."
-            },
-            { 
-                name: "Marina", 
-                coords: [13.0500, 80.2824], 
-                tide: "Avoid dead low tide; the drop-off becomes a vertical sand wall.",
-                seasons: "Summer provides shorebreak fun. Monsoon makes the rip currents life-threatening.",
-                stay: "Stay inland (Mylapore) for safety; no beachfront lodging allowed.",
-                avoid: "Never enter more than waist-deep; the sand shelf shifts daily.",
-                crowds: "Extreme (Thousands). Early morning is the only window for peace."
+                tide: "Incoming tide is essential to clear submerged granite ruins.",
+                seasons: "Best 'Right Point' waves in June/July.",
+                stay: "Guesthouses near Shore Temple for best tactical vantage.",
+                avoid: "Do not swim near temple rocks; backwash creates vacuum effect.",
+                crowds: "Low surfer density; high tourist volume."
             }
         ];
 
         const contentArea = document.getElementById('content-area');
         const sidebarTitle = document.getElementById('sidebar-title');
 
-        // Initial List View
         function showList() {
             sidebarTitle.innerText = "☰ REGIONAL INDEX";
             contentArea.innerHTML = "";
@@ -105,54 +88,30 @@
             });
         }
 
-        // Detailed Description View
         function selectBeach(beach) {
             map.flyTo(beach.coords, 15);
             sidebarTitle.innerText = "← BACK TO LIST";
             contentArea.innerHTML = `
                 <div class="intel-header">${beach.name}</div>
-                <span class="section-title">Tide Intelligence</span>
-                <p class="intel-text">${beach.tide}</p>
-                
-                <span class="section-title">Seasonal Shifts</span>
-                <p class="intel-text">${beach.seasons}</p>
-                
-                <span class="section-title">Logistics (Where to Stay)</span>
-                <p class="intel-text">${beach.stay}</p>
-                
-                <span class="section-title">Expected Crowd</span>
-                <p class="intel-text">${beach.crowds}</p>
-
+                <span class="section-title">Tide Intelligence</span><p class="intel-text">${beach.tide}</p>
+                <span class="section-title">Seasonal Shifts</span><p class="intel-text">${beach.seasons}</p>
+                <span class="section-title">Logistics</span><p class="intel-text">${beach.stay}</p>
+                <span class="section-title">Expected Crowd</span><p class="intel-text">${beach.crowds}</p>
                 <div class="danger-box">
                     <span class="section-title" style="color:#ff4d4d; margin-top:0;">DANGER MITIGATION</span>
                     <p class="intel-text">${beach.avoid}</p>
                 </div>
-                
                 <div class="exit-footer">Click anywhere else on the map to exit the description</div>
             `;
         }
 
-        // Setup Markers
         beachData.forEach(beach => {
             const marker = L.marker(beach.coords).addTo(map);
-            
-            // Hover: Show simple popup
-            marker.on('mouseover', function(e) {
-                this.bindPopup(`<b>${beach.name}</b>`).openPopup();
-            });
-            
-            // Click: Fly and show Intel Bar
-            marker.on('click', function(e) {
-                L.DomEvent.stopPropagation(e);
-                selectBeach(beach);
-            });
+            marker.on('mouseover', function() { this.bindPopup(`<b>${beach.name}</b>`).openPopup(); });
+            marker.on('click', function(e) { L.DomEvent.stopPropagation(e); selectBeach(beach); });
         });
 
-        // Exit click listener
-        map.on('click', function() {
-            showList();
-        });
-
+        map.on('click', function() { showList(); });
         showList();
     </script>
 </body>
