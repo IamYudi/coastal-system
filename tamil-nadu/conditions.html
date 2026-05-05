@@ -4,118 +4,245 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Coastal Conditions | Chennai</title>
-    <!-- Add these rows inside your Swell and Wind cards -->
-<div class="metric-row">
-    <span class="label">Wave Duration (Period)</span>
-    <span id="wave-period" class="value">--s</span>
-</div>
-<div class="metric-row">
-    <span class="label">Wind Speed</span>
-    <span id="wind-spd" class="value">--kts</span>
-</div>
-
-<!-- TOP STATUS BAR (Add below the dropdown) -->
-<div style="font-size: 0.75rem; color: #7f8c8d; margin-top: 10px;">
-    Last Update: <span id="last-updated" style="color: #3498db;">--:--:--</span> | 
-    Next Update In: <span id="next-update" style="color: #f1c40f;">30:00</span>
-</div>
-
-<script>
-    let timeLeft = 1800; // 30 minutes in seconds
-
-    function updateDashboard() {
-        const source = document.getElementById('api-selector').value;
-        const now = new Date();
-        
-        // Update Timestamps
-        document.getElementById('last-updated').innerText = now.toLocaleTimeString();
-        timeLeft = 1800; // Reset timer to 30 mins
-
-        // Mock Logic (Replace with actual fetch later)
-        if (source === 'stormglass') {
-            document.getElementById('tide-val').innerHTML = "1.1<span class='unit'>m</span>";
-            document.getElementById('swell-val').innerHTML = "0.9<span class='unit'>m</span>";
-            document.getElementById('wave-period').innerText = "10.5s";
-            document.getElementById('wind-spd').innerText = "12kts";
-        } else {
-            document.getElementById('tide-val').innerHTML = "1.3<span class='unit'>m</span>";
-            document.getElementById('swell-val').innerHTML = "0.7<span class='unit'>m</span>";
-            document.getElementById('wave-period').innerText = "6.2s";
-            document.getElementById('wind-spd').innerText = "15kts";
+    <style>
+        :root {
+            --primary: #3498db;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
+            --bg: #0f1215;
+            --card-bg: rgba(28, 34, 41, 0.9);
         }
-    }
 
-    // Countdown Timer Logic
-    setInterval(function() {
-        timeLeft--;
-        if (timeLeft <= 0) {
-            updateDashboard();
+        body { 
+            background: var(--bg); 
+            color: #e0e0e0; 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            padding: 20px; 
+            margin: 0;
         }
-        
-        const mins = Math.floor(timeLeft / 60);
-        const secs = timeLeft % 60;
-        document.getElementById('next-update').innerText = 
-            `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-    }, 1000);
 
-    // Initial Trigger
-    updateDashboard();
-</script>
+        /* Navigation Header */
+        .top-nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .back-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+        
+        .gov-link { 
+            background: #c0392b; 
+            color: white; 
+            padding: 10px 15px; 
+            border-radius: 4px; 
+            text-decoration: none; 
+            font-size: 0.75rem; 
+            font-weight: bold;
+            border: 1px solid var(--danger);
+        }
+
+        /* Status & Controls */
+        .controls { background: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #2c3e50; }
+        
+        select { 
+            background: #1c2229; 
+            color: var(--primary); 
+            border: 1px solid var(--primary); 
+            padding: 8px; 
+            border-radius: 4px; 
+            outline: none;
+        }
+
+        .status-bar { font-size: 0.75rem; color: #7f8c8d; margin-top: 10px; display: flex; gap: 15px; }
+
+        /* Dashboard Grid */
+        .dashboard { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
+            max-width: 1200px; 
+        }
+
+        .card { 
+            background: var(--card-bg); 
+            border: 1px solid #2c3e50; 
+            border-radius: 12px; 
+            padding: 20px; 
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card.tide { border-top: 4px solid var(--primary); }
+        .card.swell { border-top: 4px solid var(--success); }
+        .card.wind { border-top: 4px solid #e67e22; }
+
+        .card-header { 
+            font-size: 0.7rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: #7f8c8d; 
+            margin-bottom: 15px;
+        }
+
+        .data-main { display: flex; align-items: baseline; margin-bottom: 15px; }
+        .value { font-size: 3rem; font-weight: bold; color: #fff; }
+        .unit { font-size: 1.2rem; color: #7f8c8d; margin-left: 5px; }
+
+        .metric-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 8px 0; 
+            border-top: 1px solid #2c3e50;
+            font-size: 0.85rem;
+        }
+
+        .label { color: #bdc3c7; }
+        .stat { font-weight: bold; color: var(--success); }
+
+        /* VISUALIZATION: Tide Wave */
+        .wave-container {
+            height: 60px;
+            width: 100%;
+            background: #161b22;
+            margin-top: 10px;
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 100%;
+            background: rgba(52, 152, 219, 0.4);
+            border-radius: 40%;
+            animation: drift 10s infinite linear;
+        }
+
+        @keyframes drift {
+            from { transform: translateX(0) rotate(0deg); }
+            to { transform: translateX(-50%) rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
 
     <div class="top-nav">
-        <a href="chennai.html" style="color: #3498db; text-decoration: none;">← MAP VIEW</a>
-        
-        <div class="controls">
-            <select id="api-selector" onchange="updateDataSource()">
-                <option value="stormglass">Engine: StormGlass (Primary Marine)</option>
-                <option value="openweather">Engine: OpenWeather (Atmospheric)</option>
-            </select>
-        </div>
+        <a href="chennai.html" class="back-link">← TACTICAL MAP</a>
+        <a href="https://incois.gov.in/portal/osf/osf.jsp" target="_blank" class="gov-link">OFFICIAL GOV FORECAST (INCOIS) ↗</a>
+    </div>
 
-        <!-- VERIFIED GOVERNMENT LINK -->
-        <a href="https://incois.gov.in/portal/osf/osf.jsp" target="_blank" class="gov-link">
-            EXTERNAL: OFFICIAL INCOIS FORECAST ↗
-        </a>
+    <div class="controls">
+        <select id="api-selector" onchange="updateDashboard()">
+            <option value="stormglass">Engine: StormGlass.io (Marine High-Res)</option>
+            <option value="openweather">Engine: OpenWeather (Standard)</option>
+        </select>
+        
+        <div class="status-bar">
+            <span>Last Update: <span id="last-updated" style="color: var(--primary);">--:--</span></span>
+            <span>Next Sync In: <span id="next-update" style="color: var(--warning);">30:00</span></span>
+        </div>
     </div>
 
     <div class="dashboard">
         <!-- TIDE CARD -->
-        <div class="card">
-            <div class="card-header">Live Tide Status</div>
-            <div id="tide-val" class="data-value">--<span style="font-size: 1rem; color: #7f8c8d;">m</span></div>
-            <p id="tide-source" style="font-size: 0.7rem; color: #555;">Select source to pull data</p>
+        <div class="card tide">
+            <div class="card-header">Tide Intelligence</div>
+            <div class="data-main">
+                <span id="tide-val" class="value">--</span>
+                <span class="unit">m</span>
+            </div>
+            <div class="metric-row">
+                <span class="label">Phase</span>
+                <span id="tide-phase" class="stat">--</span>
+            </div>
+            <div class="wave-container">
+                <div class="wave" id="tide-visual-wave" style="height: 50%;"></div>
+            </div>
         </div>
 
         <!-- SWELL CARD -->
-        <div class="card" style="border-color: #2ecc71;">
-            <div class="card-header" style="color: #2ecc71;">Swell Intelligence</div>
-            <div id="swell-val" class="data-value">--<span style="font-size: 1rem; color: #7f8c8d;">m</span></div>
-            <p id="swell-source" style="font-size: 0.7rem; color: #555;">Waiting for engine command...</p>
+        <div class="card swell">
+            <div class="card-header">Swell Intelligence</div>
+            <div class="data-main">
+                <span id="swell-val" class="value">--</span>
+                <span class="unit">m</span>
+            </div>
+            <div class="metric-row">
+                <span class="label">Wave Duration (Period)</span>
+                <span id="wave-period" class="stat">--s</span>
+            </div>
+            <div class="metric-row">
+                <span class="label">Direction</span>
+                <span id="swell-dir" class="stat">--</span>
+            </div>
+        </div>
+
+        <!-- WIND CARD -->
+        <div class="card wind">
+            <div class="card-header">Wind Intelligence</div>
+            <div class="data-main">
+                <span id="wind-spd" class="value">--</span>
+                <span class="unit">kts</span>
+            </div>
+            <div class="metric-row">
+                <span class="label">Conditions</span>
+                <span id="wind-desc" class="stat">--</span>
+            </div>
+            <div class="metric-row">
+                <span class="label">Direction</span>
+                <span id="wind-dir" class="stat">--</span>
+            </div>
         </div>
     </div>
 
     <script>
-        function updateDataSource() {
-            const source = document.getElementById('api-selector').value;
-            const tideVal = document.getElementById('tide-val');
-            const swellVal = document.getElementById('swell-val');
+        let timeLeft = 1800; // 30 mins
 
+        function updateDashboard() {
+            const source = document.getElementById('api-selector').value;
+            const now = new Date();
+            
+            document.getElementById('last-updated').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            timeLeft = 1800; 
+
+            // Logic to simulate different data flushes
             if (source === 'stormglass') {
-                // Mock data for now - This is where the Fetch code goes
-                tideVal.innerHTML = "1.1<span style='font-size: 1rem;'>m</span>";
-                swellVal.innerHTML = "0.9<span style='font-size: 1rem;'>m</span>";
-                document.getElementById('tide-source').innerText = "Source: StormGlass.io (Sourced from global buoys)";
+                setValues("1.1", "Rising", "0.9", "10.5", "ESE", "12", "Offshore", "NE");
+                document.getElementById('tide-visual-wave').style.height = "70%";
             } else {
-                tideVal.innerHTML = "1.3<span style='font-size: 1rem;'>m</span>";
-                swellVal.innerHTML = "0.6<span style='font-size: 1rem;'>m</span>";
-                document.getElementById('tide-source').innerText = "Source: OpenWeather (Sourced from airport stations)";
+                setValues("1.4", "Peak", "0.6", "6.2", "E", "16", "Onshore", "E");
+                document.getElementById('tide-visual-wave').style.height = "90%";
             }
         }
-        
-        // Run once on load
-        updateDataSource();
+
+        function setValues(tide, phase, swell, period, sDir, wSpd, wDesc, wDir) {
+            document.getElementById('tide-val').innerText = tide;
+            document.getElementById('tide-phase').innerText = phase;
+            document.getElementById('swell-val').innerText = swell;
+            document.getElementById('wave-period').innerText = period + "s";
+            document.getElementById('swell-dir').innerText = sDir;
+            document.getElementById('wind-spd').innerText = wSpd;
+            document.getElementById('wind-desc').innerText = wDesc;
+            document.getElementById('wind-dir').innerText = wDir;
+        }
+
+        // Timer Logic
+        setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) updateDashboard();
+            
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById('next-update').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+        }, 1000);
+
+        updateDashboard();
     </script>
 </body>
 </html>
