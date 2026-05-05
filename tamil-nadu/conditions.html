@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Coastal Conditions | Chennai</title>
+    <style>
+        body { background: #0f1215; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: rgba(28, 34, 41, 0.9); border: 1px solid #3498db; border-radius: 8px; padding: 20px; position: relative; }
+        .card-header { color: #3498db; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; border-bottom: 1px solid #2c3e50; padding-bottom: 10px; }
+        .data-value { font-size: 2.5rem; font-weight: bold; color: #fff; display: flex; align-items: baseline; }
+        .unit { font-size: 1rem; color: #7f8c8d; margin-left: 5px; }
+        .back-btn { display: inline-block; margin-bottom: 20px; color: #3498db; text-decoration: none; font-weight: bold; }
+        
+        /* Tide Indicator Visual */
+        .tide-visual { height: 100px; background: #1c2229; border-radius: 4px; position: relative; overflow: hidden; margin-top: 15px; border: 1px solid #2c3e50; }
+        .water-level { position: absolute; bottom: 0; width: 100%; background: linear-gradient(transparent, #3498db); height: 60%; transition: height 1s; }
+        
+        .metric-row { display: flex; justify-content: space-between; margin-top: 10px; font-size: 0.9rem; }
+        .label { color: #7f8c8d; }
+        .value { color: #2ecc71; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <a href="chennai.html" class="back-btn">← BACK TO INTELLIGENCE MAP</a>
+
+    <div class="dashboard">
+        <!-- TIDE CARD -->
+        <div class="card">
+            <div class="card-header">Live Tide Status</div>
+            <div class="data-value">1.2<span class="unit">m</span></div>
+            <div class="metric-row">
+                <span class="label">Phase</span>
+                <span class="value" style="color: #f1c40f;">Rising (Inflow)</span>
+            </div>
+            <div class="tide-visual">
+                <div class="water-level"></div>
+            </div>
+            <div class="metric-row" style="margin-top: 15px;">
+                <span class="label">Next High Tide</span>
+                <span class="value">18:45 IST</span>
+            </div>
+        </div>
+
+        <!-- WAVE/SWELL CARD -->
+        <div class="card" style="border-color: #2ecc71;">
+            <div class="card-header" style="color: #2ecc71;">Swell Intelligence</div>
+            <div class="data-value">0.9<span class="unit">m</span></div>
+            
+            <div class="metric-row">
+                <span class="label">Swell Period</span>
+                <span class="value">10.2s</span>
+            </div>
+            <div class="metric-row">
+                <span class="label">Swell Direction</span>
+                <span class="value">ESE (115°)</span>
+            </div>
+            <div class="metric-row" style="margin-top: 15px; border-top: 1px solid #2c3e50; padding-top: 10px;">
+                <span class="label">Primary Energy</span>
+                <span class="value" style="color: #fff;">Groundswell</span>
+            </div>
+        </div>
+
+        <!-- WIND CARD -->
+        <div class="card" style="border-color: #e67e22;">
+            <div class="card-header" style="color: #e67e22;">Atmospheric Wind</div>
+            <div class="data-value">14<span class="unit">kts</span></div>
+            <div class="metric-row">
+                <span class="label">Direction</span>
+                <span class="value">NE (Offshore)</span>
+            </div>
+            <div class="metric-row">
+                <span class="label">Gusting</span>
+                <span class="value">18kts</span>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
