@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Goa Coastal Intelligence Hub</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
@@ -10,8 +10,8 @@
         #map { height: 100vh; width: 100%; z-index: 1; }
         
         #sidebar { 
-            position: absolute; top: 10px; right: 10px; width: 320px; 
-            max-height: 90vh; background: rgba(15, 18, 21, 0.98); z-index: 1000;
+            position: absolute; top: 10px; right: 10px; width: 340px; 
+            max-height: 92vh; background: rgba(15, 18, 21, 0.98); z-index: 1000;
             border: 1px solid #3498db; border-radius: 8px; padding: 15px;
             transition: 0.3s; box-shadow: 0 4px 20px rgba(0,0,0,0.8);
             display: flex; flex-direction: column;
@@ -32,24 +32,22 @@
         .danger-box { background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; padding: 8px; margin-top: 10px; border-radius: 4px; }
         .exit-footer { font-size: 0.75rem; color: #7f8c8d; text-align: center; margin-top: 15px; font-style: italic; border-top: 1px solid #2c3e50; padding-top: 10px; }
 
-        .back-btn { position: absolute; top: 10px; left: 50px; z-index: 1000; background: #1c2229; color: #3498db; padding: 8px 15px; text-decoration: none; border-radius: 4px; border: 1px solid #3498db; font-size: 0.8rem; font-weight: bold; }
-        
-        .forecaster-link {
-            display: block;
-            background: #1c2229;
-            text-align: center;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #f1c40f;
-            color: #f1c40f;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
+        .back-btn { 
+            position: absolute; top: 10px; left: 50px; z-index: 1000; 
+            background: #1c2229; color: #3498db; padding: 8px 15px; 
+            text-decoration: none; border-radius: 4px; border: 1px solid #3498db; 
+            font-size: 0.8rem; font-weight: bold; 
         }
-        
-        @media (max-width: 640px) {
-            #sidebar { width: 280px; padding: 10px; }
-            .beach-link { font-size: 0.8rem; padding: 8px; }
+
+        .hub-link {
+            display: block;
+            padding: 10px 12px;
+            margin: 8px 0;
+            background: #1e2937;
+            color: #38bdf8;
+            text-decoration: none;
+            border-left: 3px solid #38bdf8;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -58,12 +56,16 @@
     <a href="index.html" class="back-btn">← COMMAND CENTER</a>
 
     <div id="sidebar">
-        <span class="toggle-btn" id="sidebar-title" onclick="showList()">☰ GOA REGIONAL INDEX (16 SPOTS)</span>
-        <a href="forecaster.html" class="forecaster-link">🤖 AI FORECASTER</a>
+        <span class="toggle-btn" id="sidebar-title" onclick="showList()">☰ GOA REGIONAL INDEX (15 SPOTS)</span>
+        
+        <!-- New Hub & Forecaster Links -->
+        <a href="goa-hub.html" class="hub-link">→ GOA SECTOR HUB (Logistics + Heatmaps)</a>
+        <a href="forecaster.html" class="hub-link">→ AI TACTICAL FORECASTER</a>
+
         <div id="content-area"></div>
         
         <div id="disclaimer" style="font-size: 0.7rem; color: #95a5a6; border-top: 1px dashed #34495e; padding-top: 10px; margin-top: 10px;">
-            <strong>OPERATIONAL NOTICE:</strong> Intelligence based on local surf knowledge and historical data. Goa changes drastically during monsoon. 
+            <strong>OPERATIONAL NOTICE:</strong> Intelligence based on local surf knowledge and historical data. Coordinates refined for accuracy. 
             <br><br>
             <em>Verify on-site. Respect lifeguards and turtle nesting zones.</em>
         </div>
@@ -73,27 +75,25 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-    var map = L.map('map', { zoomControl: false }).setView([15.45, 73.80], 9.5);
+    var map = L.map('map', { zoomControl: false }).setView([15.40, 73.85], 10);
     L.control.zoom({ position: 'topleft' }).addTo(map);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
 
-    // Correct coastal coordinates
     const beachData = [
         { name: "Arambol Beach", coords: [15.6868, 73.7045], tide: "Best at mid to high tide. Multiple peaks.", seasons: "Prime Nov-Apr. Handles up to 7ft.", stay: "Budget huts and surf hostels on beach.", avoid: "Strong currents at northern rocky end.", crowds: "Moderate to High" },
         { name: "Ashwem Beach", coords: [15.6377, 73.7008], tide: "All tides work well.", seasons: "Nov-Mar best for beginners.", stay: "Quiet beach shacks and boutique stays.", avoid: "River mouth back-currents.", crowds: "Low to Moderate" },
         { name: "Mandrem Beach", coords: [15.6508, 73.7105], tide: "Low to mid tide for sandbars.", seasons: "Excellent for longboarding.", stay: "Yoga retreats and huts.", avoid: "Estuary currents.", crowds: "Moderate" },
         { name: "Morjim Beach", coords: [15.6197, 73.7324], tide: "Low to mid tide best.", seasons: "Good long rides. Turtle nesting area.", stay: "Quiet guesthouses.", avoid: "Respect turtle zones Nov-Mar.", crowds: "Low" },
-        { name: "Baga Beach", coords: [15.5560, 73.7500], tide: "Incoming tide for shorebreak.", seasons: "Consistent small waves.", stay: "All budget options available.", avoid: "Jet skis and crowds.", crowds: "Extremely High" },
-        { name: "Calangute Beach", coords: [15.5445, 73.7530], tide: "Similar to Baga.", seasons: "Year-round small waves.", stay: "Hotels and restaurants.", avoid: "Water sports traffic.", crowds: "Extremely High" },
+        { name: "Baga / Calangute", coords: [15.5560, 73.7500], tide: "Incoming tide for shorebreak.", seasons: "Consistent small waves.", stay: "All budget options available.", avoid: "Jet skis and crowds.", crowds: "Extremely High" },
         { name: "Candolim Beach", coords: [15.5167, 73.7667], tide: "Mid to high tide.", seasons: "Good consistent waves.", stay: "Hotels and restaurants nearby.", avoid: "Water sports traffic.", crowds: "Moderate to High" },
         { name: "Sinquerim Beach", coords: [15.4915, 73.7715], tide: "Mid tide best.", seasons: "Fort Aguada views.", stay: "Near Candolim.", avoid: "Tourist boats.", crowds: "Moderate" },
         { name: "Vagator Beach", coords: [15.5975, 73.7385], tide: "High tide preferred.", seasons: "Cliff-backed powerful waves.", stay: "Chapora area stays.", avoid: "Rocks and strong currents.", crowds: "Moderate" },
         { name: "Anjuna Beach", coords: [15.5765, 73.7430], tide: "High tide best.", seasons: "Famous party + surf spot.", stay: "Many budget options.", avoid: "Strong rips in sections.", crowds: "High" },
         { name: "Agonda Beach", coords: [15.0550, 73.9915], tide: "Mid to high tide.", seasons: "Most consistent in South Goa.", stay: "Beach shacks and eco-resorts.", avoid: "Southern river currents.", crowds: "Moderate" },
-        { name: "Colva Beach", coords: [15.2795, 73.9245], tide: "Sandbar dependent.", seasons: "Good groundswells.", stay: "Mid-range hotels.", avoid: "Rip currents near river mouths.", crowds: "Moderate" },
+        { name: "Betalbatim / Colva", coords: [15.2795, 73.9245], tide: "Sandbar dependent.", seasons: "Good groundswells.", stay: "Mid-range hotels.", avoid: "Rip currents near river mouths.", crowds: "Moderate" },
         { name: "Varca Beach", coords: [15.2185, 73.9400], tide: "All tides work well.", seasons: "Clean and consistent.", stay: "Resorts nearby.", avoid: "River mouth rips.", crowds: "Moderate" },
         { name: "Galgibaga Beach", coords: [15.0220, 74.0075], tide: "All tides.", seasons: "Peaceful South Goa spot.", stay: "Limited peaceful shacks.", avoid: "Turtle nesting restrictions.", crowds: "Very Low" },
-        { name: "Cola Beach", coords: [15.1060, 74.0095], tide: "High tide preferred.", seasons: "Scenic lagoon + beach.", stay: "Eco stays.", avoid: "Steep access path.", crowds: "Low" },
+        { name: "Cola Beach", coords: [15.108, 74.010], tide: "High tide preferred.", seasons: "Scenic lagoon + beach.", stay: "Eco stays.", avoid: "Steep access path.", crowds: "Low" },
         { name: "Palolem Beach", coords: [15.0095, 74.0245], tide: "High tide for safety.", seasons: "Good for beginners.", stay: "Iconic beach shacks.", avoid: "Rocks at ends during low tide.", crowds: "High" }
     ];
 
@@ -101,7 +101,7 @@
     const sidebarTitle = document.getElementById('sidebar-title');
 
     function showList() {
-        sidebarTitle.innerText = "☰ GOA REGIONAL INDEX (16 SPOTS)";
+        sidebarTitle.innerText = "☰ GOA REGIONAL INDEX (15 SPOTS)";
         contentArea.innerHTML = "";
         beachData.forEach(beach => {
             const link = document.createElement('div');
@@ -131,8 +131,13 @@
 
     beachData.forEach(beach => {
         const marker = L.marker(beach.coords).addTo(map);
-        marker.on('mouseover', function() { this.bindPopup(`<b>${beach.name}</b>`).openPopup(); });
-        marker.on('click', function(e) { L.DomEvent.stopPropagation(e); selectBeach(beach); });
+        marker.on('mouseover', function() { 
+            this.bindPopup(`<b>${beach.name}</b>`).openPopup(); 
+        });
+        marker.on('click', function(e) { 
+            L.DomEvent.stopPropagation(e); 
+            selectBeach(beach); 
+        });
     });
 
     map.on('click', function() { showList(); });
