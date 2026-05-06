@@ -3,75 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Coastal Forecaster | MoWE</title>
+    <title>Coastal Tac-Intel | Forecaster Node</title>
     <style>
         :root {
-            --primary: #3498db;
-            --bg: #0f1215;
-            --card-bg: rgba(28, 34, 41, 0.9);
+            --primary-accent: #00ff41; /* Tactical Green */
+            --warning-accent: #ffae00;
+            --bg-deep: #0d1117;
+            --panel-bg: #161b22;
+            --border-color: #30363d;
+            --text-main: #c9d1d9;
         }
-        body { 
-            background: var(--bg); 
-            color: #e0e0e0; 
-            font-family: 'Segoe UI', sans-serif; 
+
+        body, html {
             margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: 100vh;
         }
-        .header {
-            padding: 15px 20px;
-            background: var(--card-bg);
-            border-bottom: 1px solid #2c3e50;
+
+        /* Top Navigation Bar */
+        .header-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 10px 20px;
+            background: var(--panel-bg);
+            border-bottom: 2px solid var(--border-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
         }
-        .back-link { color: var(--primary); text-decoration: none; font-weight: bold; }
-        
-        /* The AI Container */
-        .ai-frame-container {
+
+        .nav-left a {
+            color: var(--primary-accent);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border: 1px solid var(--primary-accent);
+            padding: 5px 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-left a:hover {
+            background: var(--primary-accent);
+            color: black;
+        }
+
+        .node-status {
+            text-align: right;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--primary-accent);
+            border-radius: 50%;
+            margin-right: 5px;
+            box-shadow: 0 0 8px var(--primary-accent);
+        }
+
+        /* Main AI Interface Area */
+        .ai-container {
             flex-grow: 1;
-            width: 100%;
-            border: none;
-            overflow: hidden;
             position: relative;
+            background: #000;
         }
+
+        /* We use a specific HF URL parameter to force dark mode and hide the footer */
         iframe {
             width: 100%;
             height: 100%;
             border: none;
+            display: block;
         }
-        .ai-status {
-            padding: 10px 20px;
-            font-size: 0.8rem;
-            background: #1c2229;
-            color: #7f8c8d;
+
+        /* Tactical Footer */
+        .footer-bar {
+            padding: 8px 20px;
+            background: var(--panel-bg);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+            color: #8b949e;
+        }
+
+        .warning-text {
+            color: var(--warning-accent);
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <a href="conditions.html" class="back-link">← BACK TO RADAR</a>
-        <div style="text-align: right;">
-            <span style="color: #f1c40f; font-weight: bold;">MoWE AI ENGINE</span><br>
-            <span style="font-size: 0.7rem;">Mixture of Weather Experts v1</span>
+    <header class="header-nav">
+        <div class="nav-left">
+            <a href="index.html">RETURN TO MAIN RADAR</a>
         </div>
-    </div>
+        <div class="node-status">
+            <span style="font-size: 0.7rem; letter-spacing: 1px;">ENCRYPTED UPLINK: ACTIVE</span><br>
+            <span style="font-size: 0.8rem; color: var(--primary-accent); font-weight: bold;">
+                <span class="status-indicator"></span>NODE-2.5-FLASH
+            </span>
+        </div>
+    </header>
 
-    <div class="ai-status">
-        Connected to Hugging Face Inference Node... Analyzing GraphCast & FuXi Models.
-    </div>
-
-    <div class="ai-frame-container">
-        <!-- Embedding the MoWE Space directly -->
+    <main class="ai-container">
+        <!-- Secure Iframe pointing to your Hugging Face Space -->
+        <!-- Added __theme=dark and embed=true for a cleaner look -->
         <iframe 
-    src="https://farnasirim-mowe-weather-v1.hf.space/?__theme=dark" 
-    allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-    sandbox="allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts allow-downloads"
-></iframe>
-    </div>
+            src="https://viv81-coastal-ai-backend.hf.space/?__theme=dark" 
+            allow="accelerometer; gyroscope; microphone;"
+            sandbox="allow-forms allow-modals allow-popups allow-same-origin allow-scripts">
+        </iframe>
+    </main>
+
+    <footer class="footer-bar">
+        <div>COORDINATES: SECTOR-INDIA-COASTAL</div>
+        <div class="warning-text">NOTICE: CROSS-VERIFY WITH IMD/INCOIS FOR LIVE HAZARDS</div>
+        <div>STENCIL-VER: 1.0.429-SAFE</div>
+    </footer>
 
 </body>
 </html>
