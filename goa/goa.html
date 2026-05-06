@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goa Coastal Intelligence Hub</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { margin: 0; background: #0f1215; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; overflow: hidden; }
+        #map { height: 100vh; width: 100%; z-index: 1; }
+        
+        #sidebar { 
+            position: absolute; top: 10px; right: 10px; width: 320px; 
+            max-height: 90vh; background: rgba(15, 18, 21, 0.98); z-index: 1000;
+            border: 1px solid #3498db; border-radius: 8px; padding: 15px;
+            transition: 0.3s; box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+            display: flex; flex-direction: column;
+        }
+        
+        .toggle-btn { cursor: pointer; color: #3498db; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #2c3e50; padding-bottom: 5px; }
+        #content-area { overflow-y: auto; flex-grow: 1; }
+        
+        .beach-link { 
+            display: block; padding: 12px; margin: 8px 0; background: #1c2229;
+            border-left: 3px solid #3498db; cursor: pointer; font-size: 0.9rem;
+        }
+        .beach-link:hover { background: #2c3e50; }
+
+        .intel-header { color: #f1c40f; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #f1c40f; padding-bottom: 5px; }
+        .section-title { color: #3498db; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; margin-top: 12px; display: block; }
+        .intel-text { font-size: 0.85rem; line-height: 1.4; margin-bottom: 5px; color: #ced4da; }
+        .danger-box { background: rgba(231, 76, 60, 0.2); border: 1px solid #e74c3c; padding: 8px; margin-top: 10px; border-radius: 4px; }
+        .exit-footer { font-size: 0.75rem; color: #7f8c8d; text-align: center; margin-top: 15px; font-style: italic; border-top: 1px solid #2c3e50; padding-top: 10px; }
+
+        .back-btn { position: absolute; top: 10px; left: 50px; z-index: 1000; background: #1c2229; color: #3498db; padding: 8px 15px; text-decoration: none; border-radius: 4px; border: 1px solid #3498db; font-size: 0.8rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="back-btn">← COMMAND CENTER</a>
+
+    <div id="sidebar">
+        <span class="toggle-btn" id="sidebar-title" onclick="showList()">☰ GOA REGIONAL INDEX</span>
+        <a href="conditions.html" style="color:#f1c40f; margin-bottom:8px; display:block;">→ LIVE CONDITIONS (Chennai Engine)</a>
+        <div id="content-area"></div>
+        
+        <div id="disclaimer" style="font-size: 0.7rem; color: #95a5a6; border-top: 1px dashed #34495e; padding-top: 10px; margin-top: 10px;">
+            <strong>OPERATIONAL NOTICE:</strong> Intelligence is based on historical patterns & local surf knowledge. Goa coastline changes significantly with monsoon. 
+            <br><br>
+            <em>Always verify on-site. Respect lifeguard flags.</em>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+    var map = L.map('map', { zoomControl: false }).setView([15.40, 73.85], 10);
+    L.control.zoom({ position: 'topleft' }).addTo(map);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+
+    const beachData = [
+        { 
+            name: "Arambol Beach", 
+            coords: [15.685, 73.785], 
+            tide: "Best at mid to high tide. Long beach break with multiple peaks.",
+            seasons: "Prime season Nov-Apr. Handles up to 7ft. Consistent beach break.",
+            stay: "Plenty of budget huts, yoga retreats and surf hostels right on the beach.",
+            avoid: "Stronger currents at northern end near rocky outcrops during monsoon.",
+            crowds: "Moderate to High during peak season. Early mornings recommended."
+        },
+        { 
+            name: "Ashwem / Mandrem", 
+            coords: [15.625, 73.740], 
+            tide: "All tides work well. Excellent sandbars form here.",
+            seasons: "Best for beginners & intermediates Nov-Mar. Cleaner waves than Arambol.",
+            stay: "Quiet beach shacks and boutique stays. Good logistics.",
+            avoid: "River mouth at Mandrem can create strong back-currents.",
+            crowds: "Low to Moderate. Peaceful vibe."
+        },
+        { 
+            name: "Morjim Beach", 
+            coords: [15.615, 73.730], 
+            tide: "Low to mid tide best for longer rides.",
+            seasons: "Good for longboarding. Turtle nesting area — respect restrictions.",
+            stay: "Relatively quiet with good guesthouses nearby.",
+            avoid: "Olive Ridley turtle nesting zones (Nov-Mar) — stay clear of marked areas.",
+            crowds: "Low. Popular with surfers seeking calmer sessions."
+        },
+        { 
+            name: "Baga / Calangute", 
+            coords: [15.555, 73.755], 
+            tide: "Incoming tide creates fun shorebreak.",
+            seasons: "Consistent small waves. Very popular with beginners.",
+            stay: "Excellent accommodation options across all budgets.",
+            avoid: "Very crowded. Water sports and jet skis active — stay alert.",
+            crowds: "Extremely High. Dawn patrol essential."
+        },
+        { 
+            name: "Agonda Beach", 
+            coords: [15.075, 73.985], 
+            tide: "Mid to high tide preferred. Long consistent beach.",
+            seasons: "Most consistent spot in South Goa. Excellent for all levels.",
+            stay: "Beautiful beach shacks and eco-resorts. Relaxed atmosphere.",
+            avoid: "Southern end can have stronger currents near river influence.",
+            crowds: "Moderate. Favored by serious surfers in South Goa."
+        },
+        { 
+            name: "Betalbatim / Colva", 
+            coords: [15.25, 73.92], 
+            tide: "Sandbar dependent. Works on all tides.",
+            seasons: "Good groundswells. Less crowded than North Goa.",
+            stay: "Good mid-range hotels and local stays.",
+            avoid: "Watch for rip currents near river mouths.",
+            crowds: "Moderate."
+        },
+        { 
+            name: "Palolem Beach", 
+            coords: [15.01, 74.02], 
+            tide: "Best at high tide for protection from rocks.",
+            seasons: "Smaller waves suitable for beginners and longboarding.",
+            stay: "Iconic beach with many shacks and backpacker options.",
+            avoid: "Rocky sections at both ends — careful at low tide.",
+            crowds: "High during peak tourist season."
+        }
+    ];
+
+    const contentArea = document.getElementById('content-area');
+    const sidebarTitle = document.getElementById('sidebar-title');
+
+    function showList() {
+        sidebarTitle.innerText = "☰ GOA REGIONAL INDEX";
+        contentArea.innerHTML = "";
+        beachData.forEach(beach => {
+            const link = document.createElement('div');
+            link.className = 'beach-link';
+            link.innerText = beach.name.toUpperCase();
+            link.onclick = (e) => { e.stopPropagation(); selectBeach(beach); };
+            contentArea.appendChild(link);
+        });
+    }
+
+    function selectBeach(beach) {
+        map.flyTo(beach.coords, 14);
+        sidebarTitle.innerText = "← BACK TO LIST";
+        contentArea.innerHTML = `
+            <div class="intel-header">${beach.name}</div>
+            <span class="section-title">Tide Intelligence</span><p class="intel-text">${beach.tide}</p>
+            <span class="section-title">Seasonal Shifts</span><p class="intel-text">${beach.seasons}</p>
+            <span class="section-title">Logistics</span><p class="intel-text">${beach.stay}</p>
+            <span class="section-title">Expected Crowd</span><p class="intel-text">${beach.crowds}</p>
+            <div class="danger-box">
+                <span class="section-title" style="color:#ff4d4d; margin-top:0;">DANGER MITIGATION</span>
+                <p class="intel-text">${beach.avoid}</p>
+            </div>
+            <div class="exit-footer">Click anywhere else on the map to exit • Respect Lifeguard Flags</div>
+        `;
+    }
+
+    // Add markers
+    beachData.forEach(beach => {
+        const marker = L.marker(beach.coords).addTo(map);
+        marker.on('mouseover', function() { 
+            this.bindPopup(`<b>${beach.name}</b>`).openPopup(); 
+        });
+        marker.on('click', function(e) { 
+            L.DomEvent.stopPropagation(e); 
+            selectBeach(beach); 
+        });
+    });
+
+    map.on('click', function() { showList(); });
+    showList();
+    </script>
+</body>
+</html>
