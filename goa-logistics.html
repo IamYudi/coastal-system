@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOA LOGISTICS | Coastal Tactical Intelligence</title>
+    <style>
+        :root {
+            --bg: #0a0f16;
+            --card: #111827;
+            --accent: #38bdf8;
+            --warning: #fbbf24;
+        }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #e2e8f0;
+            font-family: 'Inter', system-ui, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .back-btn { color: var(--accent); text-decoration: none; font-weight: bold; }
+        h1 { margin: 0; color: #38bdf8; }
+        
+        .card {
+            background: var(--card);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        select {
+            width: 100%;
+            padding: 14px;
+            background: #1e2937;
+            color: white;
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        .section {
+            margin-bottom: 22px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid #334155;
+        }
+        .section:last-child { border-bottom: none; margin-bottom: 0; }
+        .section-title {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+        .info { line-height: 1.6; color: #cbd5e1; }
+        .map-link {
+            display: inline-block;
+            margin-top: 12px;
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .warning {
+            background: rgba(251, 191, 36, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 14px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="goa-hub.html" class="back-btn">← GOA SECTOR HUB</a>
+        <h1>GOA LOGISTICS INTEL</h1>
+    </div>
+
+    <div class="card">
+        <select id="beach-select" onchange="loadLogistics()"></select>
+        <div id="logistics-content"></div>
+    </div>
+
+    <script>
+        const logisticsData = {
+            "Arambol Beach": {
+                hotels: "• <strong>Famafa Beach Resort</strong> (highly recommended by surfers for value and location)<br>• The Clouds Resort, Viik Wellness Inn, Nazri The Verda Hotel",
+                restaurants: "Beach shacks with fresh seafood. Many good options along the beach.",
+                surfCamps: "Goa Surf School, Surf Wala, Arambol Surf Club",
+                maps: "https://www.google.com/maps/search/?api=1&query=Arambol+Beach+Goa"
+            },
+            "Ashwem Beach": {
+                hotels: "• Ashwem Beach Resort, Buddha Beach Resort, Babu Huts (excellent budget value)",
+                restaurants: "Peaceful beach shacks with good fresh food and vegetarian options.",
+                surfCamps: "Ashwem Surf School",
+                maps: "https://www.google.com/maps/search/?api=1&query=Ashwem+Beach+Goa"
+            },
+            "Mandrem Beach": {
+                hotels: "• Vaayu Kula (luxury creative stay with surf school), Mandrem Beach Resort",
+                restaurants: "Good beach cafes with relaxed vibe.",
+                surfCamps: "Mandrem Surf School, Vaayu Surf School",
+                maps: "https://www.google.com/maps/search/?api=1&query=Mandrem+Beach+Goa"
+            },
+            "Baga / Calangute": {
+                hotels: "• Many budget hotels & hostels near the beach. Look slightly away from main road for better value.",
+                restaurants: "Wide variety — Spice Rituals, Amavi, beach shacks like Janet & Jones.",
+                surfCamps: "Big Wave Surf Club, Baga Surf School",
+                maps: "https://www.google.com/maps/search/?api=1&query=Baga+Beach+Goa"
+            },
+            "Agonda Beach": {
+                hotels: "• Agonda Serenity Resort, The White Resort, Forget Me Not Resort, Cupid's Heaven",
+                restaurants: "Manveer's Kitchen, Zest, La Dolce Vita, Sea Breeze (very good scene)",
+                surfCamps: "Agonda Surf School, Aloha Surf School",
+                maps: "https://www.google.com/maps/search/?api=1&query=Agonda+Beach+Goa"
+            },
+            "Palolem Beach": {
+                hotels: "• Art Resort & Art Prive (unique & popular), Royal Touch Beach Huts, The Nest Palolem",
+                restaurants: "Beach shacks and restaurants along the crescent — good variety.",
+                surfCamps: "Palolem Surfing School",
+                maps: "https://www.google.com/maps/search/?api=1&query=Palolem+Beach+Goa"
+            },
+            "Vagator Beach": {
+                hotels: "• Vagator Beach Resort, Alcove Resort",
+                restaurants: "Cliff-top restaurants with excellent views.",
+                surfCamps: "Vagator Surf School",
+                maps: "https://www.google.com/maps/search/?api=1&query=Vagator+Beach+Goa"
+            }
+        };
+
+        function loadLogistics() {
+            const beachName = document.getElementById('beach-select').value;
+            const data = logisticsData[beachName];
+            
+            document.getElementById('logistics-content').innerHTML = `
+                <h3 style="margin-top:0; color:#60a5fa;">${beachName}</h3>
+                
+                <div class="section">
+                    <div class="section-title">🏨 Recommended Stays (Budget + Quality)</div>
+                    <div class="info">${data.hotels}</div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🍽️ Restaurants & Food Scene</div>
+                    <div class="info">${data.restaurants}</div>
+                    <div class="warning">
+                        <strong>Field Note:</strong> In busy tourist areas, it is wise to check recent traveler feedback and observe general cleanliness/freshness before dining at smaller shacks.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🏄 Surf Camps & Guides</div>
+                    <div class="info">${data.surfCamps}</div>
+                </div>
+
+                <a href="${data.maps}" target="_blank" class="map-link">📍 Open in Google Maps →</a>
+            `;
+        }
+
+        window.onload = function() {
+            const select = document.getElementById('beach-select');
+            Object.keys(logisticsData).forEach(beach => {
+                const option = document.createElement('option');
+                option.value = beach;
+                option.textContent = beach;
+                select.appendChild(option);
+            });
+            loadLogistics();
+        };
+    </script>
+</body>
+</html>
