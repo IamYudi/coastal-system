@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOA SECTOR HUB | Coastal Tac-Intel</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --bg: #0a0f16;
+            --card: #111827;
+            --accent: #38bdf8;
+            --warning: #fbbf24;
+        }
+        body { margin:0; background:var(--bg); color:#e2e8f0; font-family:'Inter',sans-serif; padding:15px; }
+        .header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
+        .back-btn { color:var(--accent); text-decoration:none; font-weight:bold; }
+        select, button { padding:12px; background:#1e2937; color:white; border:1px solid var(--accent); border-radius:6px; }
+        .card { background:var(--card); border:1px solid #334155; border-radius:12px; padding:20px; margin-bottom:20px; }
+        .legend { display:flex; flex-wrap:wrap; gap:15px; margin-top:10px; font-size:0.85rem; }
+        .legend-item { display:flex; align-items:center; gap:6px; }
+        .dot { width:14px; height:14px; border-radius:50%; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="index.html" class="back-btn">← COMMAND CENTER</a>
+        <h1 style="margin:0; color:#38bdf8;">GOA SECTOR HUB</h1>
+    </div>
+
+    <div class="card">
+        <h3>Quick Navigation</h3>
+        <a href="goa.html" style="color:#38bdf8; display:block; margin:10px 0;">→ Full Beach Map (15 Spots)</a>
+        <a href="briefing.html" style="color:#38bdf8; display:block; margin:10px 0;">→ Tactical Briefing Room</a>
+    </div>
+
+    <!-- Logistics -->
+    <div class="card">
+        <h3>Logistics Intelligence</h3>
+        <select id="beach-select" onchange="loadLogistics()" style="width:100%; margin-bottom:15px;">
+            <!-- Populated by JS -->
+        </select>
+        <div id="logistics-content"></div>
+    </div>
+
+    <!-- Wave Heatmap -->
+    <div class="card">
+        <h3>Wave Quality Heatmap (General Pattern)</h3>
+        <div id="wave-map" style="height:300px; background:#1e2937; border-radius:8px; position:relative; overflow:hidden;">
+            <!-- Simulated heatmap will be added via Leaflet -->
+        </div>
+        <div class="legend">
+            <div class="legend-item"><div class="dot" style="background:#22c55e;"></div> Prime Zone (Best Waves)</div>
+            <div class="legend-item"><div class="dot" style="background:#fbbf24;"></div> Good / Consistent</div>
+            <div class="legend-item"><div class="dot" style="background:#ef4444;"></div> Marginal / Avoid in Onshore</div>
+        </div>
+    </div>
+
+    <!-- Danger Heatmap -->
+    <div class="card">
+        <h3>Danger / Restricted Zones</h3>
+        <select id="danger-beach" onchange="showDangerMap()" style="width:100%; margin-bottom:10px;"></select>
+        <div id="danger-map-container" style="height:280px; background:#1e2937; border-radius:8px;"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const logisticsData = {
+            "Arambol Beach": {
+                hotels: "Famafa Hotel (recommended - good value, clean, beach proximity). Other solid budget options: Swati Hotel, Dreamcatcher Hostel.",
+                restaurants: "Most beach shacks are decent. <strong>Gentle note</strong>: As with many popular tourist areas, some smaller kitchens can have variable hygiene — always check recent reviews and freshness of ingredients.",
+                surfCamps: "Goa Surf School, Surf Wala",
+                maps: "https://www.google.com/maps/search/?api=1&query=Arambol+Beach+Goa"
+            }
+            // Add more beaches here as needed
+        };
+
+        function loadLogistics() {
+            const beach = document.getElementById('beach-select').value;
+            const data = logisticsData[beach] || {hotels:"Coming soon", restaurants:"Coming soon", surfCamps:"Coming soon"};
+            document.getElementById('logistics-content').innerHTML = `
+                <strong>Budget-Friendly Quality Stays:</strong><p>${data.hotels}</p>
+                <strong>Restaurants:</strong><p>${data.restaurants}</p>
+                <strong>Surf Camps:</strong><p>${data.surfCamps}</p>
+                <a href="${data.maps}" target="_blank" style="color:#38bdf8;">Open in Google Maps →</a>
+            `;
+        }
+
+        // Populate selectors
+        window.onload = () => {
+            const beaches = Object.keys(logisticsData);
+            const select = document.getElementById('beach-select');
+            beaches.forEach(b => {
+                const opt = document.createElement('option');
+                opt.value = b;
+                opt.textContent = b;
+                select.appendChild(opt);
+            });
+            loadLogistics();
+        };
+    </script>
+</body>
+</html>
