@@ -74,6 +74,18 @@
             font-size: 0.9rem;
             border-radius: 4px;
         }
+        .flowchart {
+            background: #1e2937;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .flow-step {
+            padding: 8px 0;
+            border-left: 3px solid #38bdf8;
+            padding-left: 12px;
+            margin: 6px 0;
+        }
         .disclaimer {
             font-size: 0.75rem;
             color: #94a3b8;
@@ -99,36 +111,44 @@
     <script>
         const logisticsData = {
             "Arambol Beach": {
-                hotels: "• <strong>Famafa Beach Resort</strong> (Top recommendation for surfers - good location & value)",
+                hotels: "• <strong>Famafa Beach Resort</strong> (Top recommendation for surfers)",
                 hotelMap: "https://www.google.com/maps/search/?api=1&query=Famafa+Beach+Resort+Arambol+Goa",
                 restaurants: "Multiple beach shacks offering fresh seafood.",
                 surfSchool: "Surf Wala / Goa Surf School",
                 surfMap: "https://www.google.com/maps/search/?api=1&query=Surf+Wala+Arambol+Goa",
-                transport: "Nearest airport: Dabolim (GOI) or Manohar International Airport. Local bus/taxi from Mapusa. Scooter rental highly recommended."
+                transport: "Dabolim/Mopa Airport → Mapusa → Local bus/taxi → Scooter rental best.",
+                budgetFlow: "1. Stay in beach hut or Famafa<br>2. Eat at local shacks<br>3. Rent scooter (₹400-600/day)<br>4. Surf school package",
+                mustSee: "1. Arambol Sweet Lake<br>2. Paragliding Point<br>3. Querim Beach (silent)<br>4. Sunset Point<br>5. Hippie Market (Wed)"
             },
             "Ashwem Beach": {
                 hotels: "• Ashwem Beach Resort / Babu Huts",
                 hotelMap: "https://www.google.com/maps/search/?api=1&query=Ashwem+Beach+Resort+Goa",
-                restaurants: "Calm beach shacks with good vegetarian and seafood options.",
+                restaurants: "Calm beach shacks with good vegetarian options.",
                 surfSchool: "Ashwem Surf School",
                 surfMap: "https://www.google.com/maps/search/?api=1&query=Ashwem+Surf+School+Goa",
-                transport: "Taxi / bus from Mapusa. Easy scooter access. Less crowded access roads."
+                transport: "Mapusa → Taxi/Scooter. Peaceful access roads.",
+                budgetFlow: "1. Budget beach hut<br>2. Local shacks for meals<br>3. Shared scooter or bicycle<br>4. Surf lessons in package",
+                mustSee: "1. Ashwem Beach Walk<br>2. Mandrem River<br>3. Kite Surfing Spot<br>4. Nearby Temples<br>5. Silent Night Beach"
             },
             "Mandrem Beach": {
-                hotels: "• Vaayu Kula (Premium) / Mandrem Beach Resort",
+                hotels: "• Vaayu Kula / Mandrem Beach Resort",
                 hotelMap: "https://www.google.com/maps/search/?api=1&query=Vaayu+Kula+Mandrem+Goa",
-                restaurants: "Relaxed beach cafes with good ambiance.",
+                restaurants: "Relaxed beach cafes.",
                 surfSchool: "Vaayu Surf School",
                 surfMap: "https://www.google.com/maps/search/?api=1&query=Vaayu+Surf+School+Mandrem",
-                transport: "Scooter from Arambol or Mapusa. Private taxi recommended."
+                transport: "Scooter from Arambol or Mapusa.",
+                budgetFlow: "1. Yoga hut or budget resort<br>2. Beach cafe meals<br>3. Scooter rental<br>4. Surf + Yoga combo",
+                mustSee: "1. Mandrem Beach<br>2. River Creek<br>3. Yoga & Wellness Spots<br>4. Jain Temple nearby<br>5. Sunset Dolphin Spot"
             },
             "Baga / Calangute": {
-                hotels: "• Budget hotels near beach road (avoid main noisy stretch)",
-                hotelMap: "https://www.google.com/maps/search/?api=1&query=Baga+Beach+Hotels+Goa",
-                restaurants: "Spice Rituals, Amavi, many beach shacks.",
+                hotels: "• Budget hotels slightly away from main road",
+                hotelMap: "https://www.google.com/maps/search/?api=1&query=Baga+Beach+Budget+Hotels+Goa",
+                restaurants: "Spice Rituals, Amavi, beach shacks.",
                 surfSchool: "Big Wave Surf Club",
                 surfMap: "https://www.google.com/maps/search/?api=1&query=Big+Wave+Surf+Club+Baga+Goa",
-                transport: "Very well connected. Frequent buses from Panjim/Mapusa. Plenty of taxis & rentals."
+                transport: "Excellent connectivity - buses, taxis everywhere.",
+                budgetFlow: "1. Hostel or budget hotel<br>2. Street food + shacks<br>3. Public transport/scooter<br>4. Group surf lessons",
+                mustSee: "1. Baga Beach<br>2. Tito's Lane<br>3. Candolim Fort<br>4. Calangute Market<br>5. Anjuna Flea Market (nearby)"
             },
             "Agonda Beach": {
                 hotels: "• Agonda Serenity Resort / The White Resort",
@@ -136,7 +156,9 @@
                 restaurants: "Manveer's Kitchen, Zest, Sea Breeze",
                 surfSchool: "Agonda Surf School",
                 surfMap: "https://www.google.com/maps/search/?api=1&query=Agonda+Surf+School+Goa",
-                transport: "Taxi from Margao or Palolem. Scooter rental available."
+                transport: "Margao → Taxi/Scooter.",
+                budgetFlow: "1. Beach hut or mid-budget resort<br>2. Local restaurants<br>3. Scooter rental<br>4. Surf package",
+                mustSee: "1. Agonda Beach<br>2. Cola Beach (nearby)<br>3. Butterfly Beach<br>4. Netravali Waterfall (day trip)<br>5. Palolem (short ride)"
             },
             "Palolem Beach": {
                 hotels: "• Art Resort Palolem / Royal Touch Beach Huts",
@@ -144,7 +166,9 @@
                 restaurants: "Good variety of beach restaurants.",
                 surfSchool: "Palolem Surfing School",
                 surfMap: "https://www.google.com/maps/search/?api=1&query=Palolem+Surfing+School+Goa",
-                transport: "Well connected from Margao Railway Station / Airport."
+                transport: "Margao Railway / Airport well connected.",
+                budgetFlow: "1. Beach hut<br>2. Local eateries<br>3. Rent scooter<br>4. Surf lessons",
+                mustSee: "1. Palolem Beach Crescent<br>2. Silent Beach<br>3. Leopard Valley<br>4. Canacona Market<br>5. Butterfly Beach (boat)"
             }
         };
 
@@ -176,13 +200,24 @@
                     <div class="section-title">🍽️ Food Scene</div>
                     <div class="info">${data.restaurants}</div>
                     <div class="warning">
-                        <strong>Field Note:</strong> In busy tourist areas, it is wise to check recent traveler feedback and observe general cleanliness before dining at smaller shacks.
+                        <strong>Field Note:</strong> Check recent reviews and freshness in smaller shacks.
                     </div>
                 </div>
 
+                <div class="section">
+                    <div class="section-title">💰 Most Wallet-Friendly Budget Flow</div>
+                    <div class="flowchart">
+                        ${data.budgetFlow}
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">⭐ 5 Must-See Places</div>
+                    <div class="info">${data.mustSee}</div>
+                </div>
+
                 <div class="disclaimer">
-                    <strong>Disclaimer:</strong> Information is for guidance only and may become outdated. 
-                    Prices, availability, and conditions can change. Always verify latest information.<br>
+                    <strong>Disclaimer:</strong> All information is for guidance only and may become outdated. Prices, availability, and conditions can change rapidly. Always verify latest information on-site or via recent reviews.<br>
                     <strong>Last Updated:</strong> May 06, 2026
                 </div>
             `;
