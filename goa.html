@@ -45,7 +45,7 @@
         <div id="content-area"></div>
         
         <div id="disclaimer" style="font-size: 0.7rem; color: #95a5a6; border-top: 1px dashed #34495e; padding-top: 10px; margin-top: 10px;">
-            <strong>OPERATIONAL NOTICE:</strong> Intelligence based on local surf knowledge and historical data. Goa changes drastically during monsoon. 
+            <strong>OPERATIONAL NOTICE:</strong> Intelligence based on local surf knowledge and historical data. Coordinates refined for accuracy. 
             <br><br>
             <em>Verify on-site. Respect lifeguards and turtle nesting zones.</em>
         </div>
@@ -60,21 +60,21 @@
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
 
     const beachData = [
-        { name: "Arambol Beach", coords: [15.685, 73.785], tide: "Best at mid to high tide. Multiple peaks.", seasons: "Prime Nov-Apr. Handles up to 7ft.", stay: "Budget huts and surf hostels on beach.", avoid: "Strong currents at northern rocky end.", crowds: "Moderate to High" },
-        { name: "Ashwem Beach", coords: [15.625, 73.740], tide: "All tides work well.", seasons: "Nov-Mar best for beginners.", stay: "Quiet beach shacks and boutique stays.", avoid: "River mouth back-currents.", crowds: "Low to Moderate" },
-        { name: "Mandrem Beach", coords: [15.635, 73.740], tide: "Low to mid tide for sandbars.", seasons: "Excellent for longboarding.", stay: "Yoga retreats and huts.", avoid: "Estuary currents.", crowds: "Moderate" },
-        { name: "Morjim Beach", coords: [15.615, 73.730], tide: "Low to mid tide best.", seasons: "Good long rides. Turtle nesting area.", stay: "Quiet guesthouses.", avoid: "Respect turtle zones Nov-Mar.", crowds: "Low" },
-        { name: "Baga / Calangute", coords: [15.555, 73.755], tide: "Incoming tide for shorebreak.", seasons: "Consistent small waves.", stay: "All budget options available.", avoid: "Jet skis and crowds.", crowds: "Extremely High" },
-        { name: "Candolim Beach", coords: [15.52, 73.76], tide: "Mid to high tide.", seasons: "Good consistent waves.", stay: "Hotels and restaurants nearby.", avoid: "Water sports traffic.", crowds: "Moderate to High" },
-        { name: "Sinquerim Beach", coords: [15.50, 73.77], tide: "Mid tide best.", seasons: "Fort Aguada views.", stay: "Near Candolim.", avoid: "Tourist boats.", crowds: "Moderate" },
-        { name: "Vagator Beach", coords: [15.60, 73.73], tide: "High tide preferred.", seasons: "Cliff-backed powerful waves.", stay: "Chapora area stays.", avoid: "Rocks and strong currents.", crowds: "Moderate" },
-        { name: "Anjuna Beach", coords: [15.58, 73.74], tide: "High tide best.", seasons: "Famous party + surf spot.", stay: "Many budget options.", avoid: "Strong rips in sections.", crowds: "High" },
-        { name: "Agonda Beach", coords: [15.075, 73.985], tide: "Mid to high tide.", seasons: "Most consistent in South Goa.", stay: "Beach shacks and eco-resorts.", avoid: "Southern river currents.", crowds: "Moderate" },
-        { name: "Betalbatim / Colva", coords: [15.25, 73.92], tide: "Sandbar dependent.", seasons: "Good groundswells.", stay: "Mid-range hotels.", avoid: "Rip currents near river mouths.", crowds: "Moderate" },
-        { name: "Varca Beach", coords: [15.22, 73.93], tide: "All tides work well.", seasons: "Clean and consistent.", stay: "Resorts nearby.", avoid: "River mouth rips.", crowds: "Moderate" },
-        { name: "Galgibaga Beach", coords: [15.035, 74.015], tide: "All tides.", seasons: "Peaceful South Goa spot.", stay: "Limited peaceful shacks.", avoid: "Turtle nesting restrictions.", crowds: "Very Low" },
-        { name: "Cola Beach", coords: [15.30, 74.05], tide: "High tide preferred.", seasons: "Scenic lagoon + beach.", stay: "Eco stays.", avoid: "Steep access path.", crowds: "Low" },
-        { name: "Palolem Beach", coords: [15.01, 74.02], tide: "High tide for safety.", seasons: "Good for beginners.", stay: "Iconic beach shacks.", avoid: "Rocks at ends during low tide.", crowds: "High" }
+        { name: "Arambol Beach", coords: [15.6868, 73.7045], tide: "Best at mid to high tide. Multiple peaks.", seasons: "Prime Nov-Apr. Handles up to 7ft.", stay: "Budget huts and surf hostels on beach.", avoid: "Strong currents at northern rocky end.", crowds: "Moderate to High" },
+        { name: "Ashwem Beach", coords: [15.6377, 73.7008], tide: "All tides work well.", seasons: "Nov-Mar best for beginners.", stay: "Quiet beach shacks and boutique stays.", avoid: "River mouth back-currents.", crowds: "Low to Moderate" },
+        { name: "Mandrem Beach", coords: [15.6508, 73.7105], tide: "Low to mid tide for sandbars.", seasons: "Excellent for longboarding.", stay: "Yoga retreats and huts.", avoid: "Estuary currents.", crowds: "Moderate" },
+        { name: "Morjim Beach", coords: [15.6197, 73.7324], tide: "Low to mid tide best.", seasons: "Good long rides. Turtle nesting area.", stay: "Quiet guesthouses.", avoid: "Respect turtle zones Nov-Mar.", crowds: "Low" },
+        { name: "Baga / Calangute", coords: [15.5560, 73.7500], tide: "Incoming tide for shorebreak.", seasons: "Consistent small waves.", stay: "All budget options available.", avoid: "Jet skis and crowds.", crowds: "Extremely High" },
+        { name: "Candolim Beach", coords: [15.5167, 73.7667], tide: "Mid to high tide.", seasons: "Good consistent waves.", stay: "Hotels and restaurants nearby.", avoid: "Water sports traffic.", crowds: "Moderate to High" },
+        { name: "Sinquerim Beach", coords: [15.4915, 73.7715], tide: "Mid tide best.", seasons: "Fort Aguada views.", stay: "Near Candolim.", avoid: "Tourist boats.", crowds: "Moderate" },
+        { name: "Vagator Beach", coords: [15.5975, 73.7385], tide: "High tide preferred.", seasons: "Cliff-backed powerful waves.", stay: "Chapora area stays.", avoid: "Rocks and strong currents.", crowds: "Moderate" },
+        { name: "Anjuna Beach", coords: [15.5765, 73.7430], tide: "High tide best.", seasons: "Famous party + surf spot.", stay: "Many budget options.", avoid: "Strong rips in sections.", crowds: "High" },
+        { name: "Agonda Beach", coords: [15.0550, 73.9915], tide: "Mid to high tide.", seasons: "Most consistent in South Goa.", stay: "Beach shacks and eco-resorts.", avoid: "Southern river currents.", crowds: "Moderate" },
+        { name: "Betalbatim / Colva", coords: [15.2795, 73.9245], tide: "Sandbar dependent.", seasons: "Good groundswells.", stay: "Mid-range hotels.", avoid: "Rip currents near river mouths.", crowds: "Moderate" },
+        { name: "Varca Beach", coords: [15.2185, 73.9400], tide: "All tides work well.", seasons: "Clean and consistent.", stay: "Resorts nearby.", avoid: "River mouth rips.", crowds: "Moderate" },
+        { name: "Galgibaga Beach", coords: [15.0220, 74.0075], tide: "All tides.", seasons: "Peaceful South Goa spot.", stay: "Limited peaceful shacks.", avoid: "Turtle nesting restrictions.", crowds: "Very Low" },
+        { name: "Cola Beach", coords: [15.108, 74.010], tide: "High tide preferred.", seasons: "Scenic lagoon + beach.", stay: "Eco stays.", avoid: "Steep access path.", crowds: "Low" },
+        { name: "Palolem Beach", coords: [15.0095, 74.0245], tide: "High tide for safety.", seasons: "Good for beginners.", stay: "Iconic beach shacks.", avoid: "Rocks at ends during low tide.", crowds: "High" }
     ];
 
     const contentArea = document.getElementById('content-area');
