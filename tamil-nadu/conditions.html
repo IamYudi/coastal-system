@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Live Coastal Intelligence | Chennai</title>
     <style>
         :root {
@@ -29,7 +29,7 @@
         .controls { background: var(--card-bg); padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #2c3e50; }
         select { background: #1c2229; color: var(--primary); border: 1px solid var(--primary); padding: 8px; border-radius: 4px; outline: none; cursor: pointer; }
 
-        .status-bar { font-size: 0.75rem; color: #7f8c8d; margin-top: 10px; display: flex; gap: 15px; }
+        .status-bar { font-size: 0.75rem; color: #7f8c8d; margin-top: 10px; display: flex; gap: 15px; flex-wrap: wrap; }
 
         .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; }
         .card { background: var(--card-bg); border: 1px solid #2c3e50; border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
@@ -50,6 +50,13 @@
         .wave { position: absolute; bottom: 0; width: 200%; height: 100%; background: rgba(52, 152, 219, 0.4); border-radius: 40%; animation: drift 10s infinite linear; transition: height 2s ease-in-out; }
 
         @keyframes drift { from { transform: translateX(0) rotate(0deg); } to { transform: translateX(-50%) rotate(360deg); } }
+        
+        /* Mobile touch improvements */
+        @media (max-width: 640px) {
+            body { padding: 12px; }
+            .value { font-size: 2.2rem; }
+            .card { padding: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -59,8 +66,8 @@
         <a href="https://incois.gov.in/portal/osf/osf.jsp" target="_blank" class="gov-link">OFFICIAL GOV FORECAST (INCOIS) ↗</a>
     </div>
     <div>
-    <a href="forecaster.html" style="color: #f1c40f; text-decoration: none; font-weight: bold;">Launch AI Forecaster →</a>
-    </div
+        <a href="forecaster.html" style="color: #f1c40f; text-decoration: none; font-weight: bold;">Launch AI Forecaster →</a>
+    </div>
     <div class="controls">
         <select id="api-selector" onchange="updateDashboard()">
             <option value="stormglass">Engine: StormGlass.io (Marine High-Res)</option>
@@ -126,7 +133,7 @@
 
     <script>
         const STORMGLASS_KEY_NAME = 'sg_api_key';
-        let timeLeft = 3600; // Updated to 1 Hour (3600 seconds)
+        let timeLeft = 3600; // 1 hour
         const lat = 12.8105;
         const lng = 80.2458;
 
@@ -145,7 +152,7 @@
 
             const now = new Date();
             document.getElementById('last-updated').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            timeLeft = 3600; // Reset to 60 mins
+            timeLeft = 3600;
 
             try {
                 // Fetch Weather & Swell

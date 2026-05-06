@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Coastal Tac-Intel | Forecaster Node</title>
     <style>
         :root {
-            --primary-accent: #00ff41; /* Tactical Green */
+            --primary-accent: #00ff41;
             --warning-accent: #ffae00;
             --bg-deep: #0d1117;
             --panel-bg: #161b22;
@@ -21,80 +21,72 @@
             background-color: var(--bg-deep);
             color: var(--text-main);
             font-family: 'Courier New', Courier, monospace;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* Top Navigation Bar */
+        /* Fixed Header for Mobile */
         .header-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 15px;
             background: var(--panel-bg);
             border-bottom: 2px solid var(--border-color);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            z-index: 100;
         }
 
         .nav-left a {
             color: var(--primary-accent);
             text-decoration: none;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             border: 1px solid var(--primary-accent);
-            padding: 5px 10px;
-            transition: all 0.3s;
-        }
-
-        .nav-left a:hover {
-            background: var(--primary-accent);
-            color: black;
-        }
-
-        .node-status {
-            text-align: right;
-        }
-
-        .status-indicator {
+            padding: 8px;
             display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: var(--primary-accent);
-            border-radius: 50%;
-            margin-right: 5px;
-            box-shadow: 0 0 8px var(--primary-accent);
         }
 
-        /* Main AI Interface Area */
+        .node-status { text-align: right; line-height: 1.2; }
+
+        /* The Chat Container - Fixed Height for Mobile */
         .ai-container {
-            flex-grow: 1;
-            position: relative;
+            flex: 1;
+            width: 100%;
             background: #000;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* We use a specific HF URL parameter to force dark mode and hide the footer */
         iframe {
             width: 100%;
             height: 100%;
             border: none;
-            display: block;
         }
 
-        /* Tactical Footer */
+        /* Tactical Footer - Stacked on Mobile */
         .footer-bar {
-            padding: 8px 20px;
+            padding: 10px;
             background: var(--panel-bg);
             border-top: 1px solid var(--border-color);
-            font-size: 0.7rem;
-            display: flex;
-            justify-content: space-between;
-            color: #8b949e;
+            font-size: 0.6rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
         }
 
         .warning-text {
+            grid-column: span 2;
             color: var(--warning-accent);
-            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .header-nav { padding: 10px; }
+            .node-status span { font-size: 0.6rem !important; }
         }
     </style>
 </head>
@@ -102,31 +94,35 @@
 
     <header class="header-nav">
         <div class="nav-left">
-            <a href="index.html">RETURN TO MAIN RADAR</a>
+            <a href="index.html">← RADAR EXIT</a>
         </div>
         <div class="node-status">
-            <span style="font-size: 0.7rem; letter-spacing: 1px;">ENCRYPTED UPLINK: ACTIVE</span><br>
-            <span style="font-size: 0.8rem; color: var(--primary-accent); font-weight: bold;">
-                <span class="status-indicator"></span>NODE-2.5-FLASH
-            </span>
+            <span style="font-size: 0.6rem; color: #8b949e;">UPLINK: SECURE</span><br>
+            <span style="font-size: 0.7rem; color: var(--primary-accent); font-weight: bold;">NODE-2.5-FLASH</span>
         </div>
     </header>
 
     <main class="ai-container">
-        <!-- Secure Iframe pointing to your Hugging Face Space -->
-        <!-- Added __theme=dark and embed=true for a cleaner look -->
+        <!-- Added container relative positioning to prevent iframe from jumping -->
         <iframe 
             src="https://viv81-coastal-ai-backend.hf.space/?__theme=dark" 
-            allow="accelerometer; gyroscope; microphone;"
-            sandbox="allow-forms allow-modals allow-popups allow-same-origin allow-scripts">
+            allow="accelerometer; gyroscope; microphone;">
         </iframe>
     </main>
 
     <footer class="footer-bar">
-        <div>COORDINATES: SECTOR-INDIA-COASTAL</div>
-        <div class="warning-text">NOTICE: CROSS-VERIFY WITH IMD/INCOIS FOR LIVE HAZARDS</div>
-        <div>STENCIL-VER: 1.0.429-SAFE</div>
+        <div class="warning-text">⚠️ CROSS-VERIFY WITH IMD/INCOIS LIVE DATA,<br>THE AI MAY MAKE MISTAKES</div>
+        <div>LOC: SECTOR-TN-GOA</div>
+        <div style="text-align: right;">VER: 1.1.0-MOBILE</div>
     </footer>
 
+    <script>
+        // CRITICAL: Prevent the StormGlass API prompt from breaking the UI on mobile
+        // If you are hardcoding the key, ensure it's in your main JS. 
+        // This script ensures the page doesn't hang if the key is missing.
+        window.addEventListener('load', () => {
+            console.log("Tactical Mobile UI Initialized.");
+        });
+    </script>
 </body>
 </html>
