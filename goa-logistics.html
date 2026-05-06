@@ -61,7 +61,7 @@
         .info { line-height: 1.6; color: #cbd5e1; }
         .map-link {
             display: inline-block;
-            margin-top: 12px;
+            margin: 8px 0;
             color: #38bdf8;
             text-decoration: none;
             font-weight: 600;
@@ -71,8 +71,16 @@
             border-left: 4px solid var(--warning);
             padding: 14px;
             margin: 15px 0;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             border-radius: 4px;
+        }
+        .disclaimer {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            background: #1e2937;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 25px;
         }
     </style>
 </head>
@@ -91,46 +99,52 @@
     <script>
         const logisticsData = {
             "Arambol Beach": {
-                hotels: "• <strong>Famafa Beach Resort</strong> (highly recommended by surfers for value and location)<br>• The Clouds Resort, Viik Wellness Inn, Nazri The Verda Hotel",
-                restaurants: "Beach shacks with fresh seafood. Many good options along the beach.",
-                surfCamps: "Goa Surf School, Surf Wala, Arambol Surf Club",
-                maps: "https://www.google.com/maps/search/?api=1&query=Arambol+Beach+Goa"
+                hotels: "• <strong>Famafa Beach Resort</strong> (Top recommendation for surfers - good location & value)",
+                hotelMap: "https://www.google.com/maps/search/?api=1&query=Famafa+Beach+Resort+Arambol+Goa",
+                restaurants: "Multiple beach shacks offering fresh seafood.",
+                surfSchool: "Surf Wala / Goa Surf School",
+                surfMap: "https://www.google.com/maps/search/?api=1&query=Surf+Wala+Arambol+Goa",
+                transport: "Nearest airport: Dabolim (GOI) or Manohar International Airport. Local bus/taxi from Mapusa. Scooter rental highly recommended."
             },
             "Ashwem Beach": {
-                hotels: "• Ashwem Beach Resort, Buddha Beach Resort, Babu Huts (excellent budget value)",
-                restaurants: "Peaceful beach shacks with good fresh food and vegetarian options.",
-                surfCamps: "Ashwem Surf School",
-                maps: "https://www.google.com/maps/search/?api=1&query=Ashwem+Beach+Goa"
+                hotels: "• Ashwem Beach Resort / Babu Huts",
+                hotelMap: "https://www.google.com/maps/search/?api=1&query=Ashwem+Beach+Resort+Goa",
+                restaurants: "Calm beach shacks with good vegetarian and seafood options.",
+                surfSchool: "Ashwem Surf School",
+                surfMap: "https://www.google.com/maps/search/?api=1&query=Ashwem+Surf+School+Goa",
+                transport: "Taxi / bus from Mapusa. Easy scooter access. Less crowded access roads."
             },
             "Mandrem Beach": {
-                hotels: "• Vaayu Kula (luxury creative stay with surf school), Mandrem Beach Resort",
-                restaurants: "Good beach cafes with relaxed vibe.",
-                surfCamps: "Mandrem Surf School, Vaayu Surf School",
-                maps: "https://www.google.com/maps/search/?api=1&query=Mandrem+Beach+Goa"
+                hotels: "• Vaayu Kula (Premium) / Mandrem Beach Resort",
+                hotelMap: "https://www.google.com/maps/search/?api=1&query=Vaayu+Kula+Mandrem+Goa",
+                restaurants: "Relaxed beach cafes with good ambiance.",
+                surfSchool: "Vaayu Surf School",
+                surfMap: "https://www.google.com/maps/search/?api=1&query=Vaayu+Surf+School+Mandrem",
+                transport: "Scooter from Arambol or Mapusa. Private taxi recommended."
             },
             "Baga / Calangute": {
-                hotels: "• Many budget hotels & hostels near the beach. Look slightly away from main road for better value.",
-                restaurants: "Wide variety — Spice Rituals, Amavi, beach shacks like Janet & Jones.",
-                surfCamps: "Big Wave Surf Club, Baga Surf School",
-                maps: "https://www.google.com/maps/search/?api=1&query=Baga+Beach+Goa"
+                hotels: "• Budget hotels near beach road (avoid main noisy stretch)",
+                hotelMap: "https://www.google.com/maps/search/?api=1&query=Baga+Beach+Hotels+Goa",
+                restaurants: "Spice Rituals, Amavi, many beach shacks.",
+                surfSchool: "Big Wave Surf Club",
+                surfMap: "https://www.google.com/maps/search/?api=1&query=Big+Wave+Surf+Club+Baga+Goa",
+                transport: "Very well connected. Frequent buses from Panjim/Mapusa. Plenty of taxis & rentals."
             },
             "Agonda Beach": {
-                hotels: "• Agonda Serenity Resort, The White Resort, Forget Me Not Resort, Cupid's Heaven",
-                restaurants: "Manveer's Kitchen, Zest, La Dolce Vita, Sea Breeze (very good scene)",
-                surfCamps: "Agonda Surf School, Aloha Surf School",
-                maps: "https://www.google.com/maps/search/?api=1&query=Agonda+Beach+Goa"
+                hotels: "• Agonda Serenity Resort / The White Resort",
+                hotelMap: "https://www.google.com/maps/search/?api=1&query=Agonda+Serenity+Resort+Goa",
+                restaurants: "Manveer's Kitchen, Zest, Sea Breeze",
+                surfSchool: "Agonda Surf School",
+                surfMap: "https://www.google.com/maps/search/?api=1&query=Agonda+Surf+School+Goa",
+                transport: "Taxi from Margao or Palolem. Scooter rental available."
             },
             "Palolem Beach": {
-                hotels: "• Art Resort & Art Prive (unique & popular), Royal Touch Beach Huts, The Nest Palolem",
-                restaurants: "Beach shacks and restaurants along the crescent — good variety.",
-                surfCamps: "Palolem Surfing School",
-                maps: "https://www.google.com/maps/search/?api=1&query=Palolem+Beach+Goa"
-            },
-            "Vagator Beach": {
-                hotels: "• Vagator Beach Resort, Alcove Resort",
-                restaurants: "Cliff-top restaurants with excellent views.",
-                surfCamps: "Vagator Surf School",
-                maps: "https://www.google.com/maps/search/?api=1&query=Vagator+Beach+Goa"
+                hotels: "• Art Resort Palolem / Royal Touch Beach Huts",
+                hotelMap: "https://www.google.com/maps/search/?api=1&query=Art+Resort+Palolem+Goa",
+                restaurants: "Good variety of beach restaurants.",
+                surfSchool: "Palolem Surfing School",
+                surfMap: "https://www.google.com/maps/search/?api=1&query=Palolem+Surfing+School+Goa",
+                transport: "Well connected from Margao Railway Station / Airport."
             }
         };
 
@@ -142,24 +156,35 @@
                 <h3 style="margin-top:0; color:#60a5fa;">${beachName}</h3>
                 
                 <div class="section">
-                    <div class="section-title">🏨 Recommended Stays (Budget + Quality)</div>
+                    <div class="section-title">🏨 Main Recommended Stay</div>
                     <div class="info">${data.hotels}</div>
+                    <a href="${data.hotelMap}" target="_blank" class="map-link">📍 View Hotel on Google Maps →</a>
                 </div>
 
                 <div class="section">
-                    <div class="section-title">🍽️ Restaurants & Food Scene</div>
+                    <div class="section-title">🏄 Top Surf School</div>
+                    <div class="info">${data.surfSchool}</div>
+                    <a href="${data.surfMap}" target="_blank" class="map-link">📍 View Surf School on Google Maps →</a>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🚕 Transport Options</div>
+                    <div class="info">${data.transport}</div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🍽️ Food Scene</div>
                     <div class="info">${data.restaurants}</div>
                     <div class="warning">
-                        <strong>Field Note:</strong> In busy tourist areas, it is wise to check recent traveler feedback and observe general cleanliness/freshness before dining at smaller shacks.
+                        <strong>Field Note:</strong> In busy tourist areas, it is wise to check recent traveler feedback and observe general cleanliness before dining at smaller shacks.
                     </div>
                 </div>
 
-                <div class="section">
-                    <div class="section-title">🏄 Surf Camps & Guides</div>
-                    <div class="info">${data.surfCamps}</div>
+                <div class="disclaimer">
+                    <strong>Disclaimer:</strong> Information is for guidance only and may become outdated. 
+                    Prices, availability, and conditions can change. Always verify latest information.<br>
+                    <strong>Last Updated:</strong> May 06, 2026
                 </div>
-
-                <a href="${data.maps}" target="_blank" class="map-link">📍 Open in Google Maps →</a>
             `;
         }
 
