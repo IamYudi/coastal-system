@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>GOA SECTOR HUB | Coastal Tactical Intelligence</title>
     <style>
         :root {
@@ -73,6 +73,10 @@
             font-size: 0.95rem;
             margin: 8px 0 15px 0;
         }
+        @media (max-width: 640px) {
+            body { padding: 15px; }
+            .btn { padding: 10px 18px; font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body>
@@ -84,7 +88,7 @@
 
     <div class="card">
         <h3>📍 Full Beach Intelligence Map</h3>
-        <p class="description">Interactive map with 15 beaches, tide intel, and danger notes.</p>
+        <p class="description">Interactive map with 16 beaches, tide intel, and danger notes.</p>
         <a href="goa.html" class="btn">Open Full Goa Map →</a>
     </div>
 
@@ -105,6 +109,7 @@
         <p class="description">Goa-wide tourist density heatmap to avoid crowds.</p>
         <a href="goa-population.html" class="btn">View Population Density Map →</a>
     </div>
+    <!-- NOTE: goa-population.html does not exist yet – you can later create it or remove this card -->
 
     <div class="card">
         <h3>🤖 AI Tactical Forecaster</h3>
