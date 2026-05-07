@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GOA HEATMAPS | Coastal Tactical Intelligence</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        :root {
+            --bg: #0a0f16;
+            --card: #111827;
+            --accent: #38bdf8;
+        }
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #e2e8f0;
+            font-family: 'Inter', system-ui, sans-serif;
+            padding: 15px;
+            min-height: 100vh;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .back-btn { color: var(--accent); text-decoration: none; font-weight: bold; }
+        h1 { margin: 0; color: #38bdf8; }
+        select {
+            width: 100%;
+            max-width: 420px;
+            padding: 14px;
+            background: #1e2937;
+            color: white;
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            font-size: 1.05rem;
+        }
+        .card {
+            background: var(--card);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        #map { height: 420px; border-radius: 12px; margin-top: 15px; }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin-top: 12px;
+            font-size: 0.9rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+        }
+        .disclaimer {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="goa-hub.html" class="back-btn">← GOA SECTOR HUB</a>
+        <h1>WAVE & DANGER HEATMAPS</h1>
+    </div>
+
+    <div class="card">
+        <select id="beach-select" onchange="loadBeachHeatmaps()"></select>
+        <div id="map"></div>
+    </div>
+
+    <div class="card">
+        <h3>Legend</h3>
+        <div class="legend">
+            <div class="legend-item"><div class="legend-color" style="background:#22c55e;"></div><strong>Prime Wave Zone</strong></div>
+            <div class="legend-item"><div class="legend-color" style="background:#eab308;"></div><strong>Good / Consistent</strong></div>
+            <div class="legend-item"><div class="legend-color" style="background:#f97316;"></div><strong>Marginal</strong></div>
+            <div class="legend-item"><div class="legend-color" style="background:#ef4444;"></div><strong>High Danger / Avoid</strong></div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map;
+        let currentMarkers = [];
+
+        const beachHeatmapData = {
+            "Arambol Beach": {
+                center: [15.6868, 73.7045],
+                waveZones: [
+                    {lat:15.688, lng:73.702, color:"#22c55e", radius:800, type:"Prime"},
+                    {lat:15.685, lng:73.707, color:"#eab308", radius:600, type:"Good"}
+                ],
+                dangerZones: [
+                    {lat:15.690, lng:73.700, color:"#ef4444", radius:400, info:"Strong rip near rocks"}
+                ]
+            },
+            "Ashwem Beach": {
+                center: [15.6377, 73.7008],
+                waveZones: [
+                    {lat:15.638, lng:73.699, color:"#22c55e", radius:700},
+                    {lat:15.636, lng:73.703, color:"#eab308", radius:500}
+                ],
+                dangerZones: [
+                    {lat:15.640, lng:73.697, color:"#ef4444", radius:350, info:"River mouth current"}
+                ]
+            },
+            "Mandrem Beach": {
+                center: [15.6508, 73.7105],
+                waveZones: [{lat:15.651, lng:73.709, color:"#22c55e", radius:650}],
+                dangerZones: [{lat:15.653, lng:73.707, color:"#f97316", radius:400, info:"Estuary back current"}]
+            },
+            "Baga / Calangute": {
+                center: [15.5560, 73.7500],
+                waveZones: [
+                    {lat:15.555, lng:73.748, color:"#eab308", radius:900},
+                    {lat:15.558, lng:73.753, color:"#22c55e", radius:500}
+                ],
+                dangerZones: [{lat:15.552, lng:73.745, color:"#ef4444", radius:450, info:"Crowded + jet ski area"}]
+            },
+            "Agonda Beach": {
+                center: [15.0550, 73.9915],
+                waveZones: [{lat:15.054, lng:73.990, color:"#22c55e", radius:800}],
+                dangerZones: [{lat:15.060, lng:73.988, color:"#f97316", radius:500, info:"Southern river influence"}]
+            },
+            "Palolem Beach": {
+                center: [15.0095, 74.0245],
+                waveZones: [{lat:15.010, lng:74.023, color:"#eab308", radius:700}],
+                dangerZones: [{lat:15.005, lng:74.028, color:"#ef4444", radius:300, info:"Rocks at low tide"}]
+            }
+        };
+
+        function initMap() {
+            map = L.map('map', { zoomControl: true }).setView([15.40, 73.85], 11);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+        }
+
+        function loadBeachHeatmaps() {
+            const beachName = document.getElementById('beach-select').value;
+            const data = beachHeatmapData[beachName];
+            
+            if (!data) return;
+
+            // Clear previous layers
+            currentMarkers.forEach(layer => map.removeLayer(layer));
+            currentMarkers = [];
+
+            map.flyTo(data.center, 14);
+
+            // Wave Quality Zones
+            data.waveZones.forEach(zone => {
+                const circle = L.circle([zone.lat, zone.lng], {
+                    color: zone.color,
+                    fillColor: zone.color,
+                    fillOpacity: 0.35,
+                    radius: zone.radius
+                }).addTo(map);
+                currentMarkers.push(circle);
+            });
+
+            // Danger Zones
+            data.dangerZones.forEach(zone => {
+                const danger = L.circle([zone.lat, zone.lng], {
+                    color: "#ef4444",
+                    fillColor: "#b91c1c",
+                    fillOpacity: 0.45,
+                    radius: zone.radius
+                }).bindPopup(`<b>Danger Zone</b><br>${zone.info || 'High risk area'}`).addTo(map);
+                currentMarkers.push(danger);
+            });
+        }
+
+        // Populate dropdown
+        window.onload = function() {
+            initMap();
+            const select = document.getElementById('beach-select');
+            Object.keys(beachHeatmapData).forEach(beach => {
+                const option = document.createElement('option');
+                option.value = beach;
+                option.textContent = beach;
+                select.appendChild(option);
+            });
+            loadBeachHeatmaps(); // Load first beach
+        };
+    </script>
+
+    <div class="disclaimer">
+        <strong>Disclaimer:</strong> Heatmaps are based on general surf knowledge and historical patterns. Coastal conditions change daily. Always scout on-site and follow lifeguard advice.<br>
+        <strong>Last Updated:</strong> May 06, 2026
+    </div>
+</body>
+</html>
