@@ -95,7 +95,7 @@
     <div class="card">
         <h3>Legend</h3>
         <div class="legend">
-            <div class="legend-item"><div class="legend-color" style="background:#22c55e;"></div><strong>Prime Wave Zone</strong> (best quality)</div>
+            <div class="legend-item"><div class="legend-color" style="background:#22c55e;"></div><strong>Prime Wave Zone</strong> (2/3 ocean, 1/3 beach)</div>
             <div class="legend-item"><div class="legend-color" style="background:#eab308;"></div><strong>Good / Consistent</strong></div>
             <div class="legend-item"><div class="legend-color" style="background:#f97316;"></div><strong>Marginal / Inconsistent</strong></div>
             <div class="legend-item"><div class="legend-color" style="background:#ef4444;"></div><strong>High Danger (specific spot)</strong></div>
@@ -107,151 +107,152 @@
         let map;
         let currentOverlays = [];
 
-        // --- All danger zones now small & precise (radii 150-350m) ---
+        // All coordinates shifted west (lower longitude) so circles sit on water, touching beach
         const beachHeatmapData = {
             "Arambol Beach": {
-                center: [15.6870, 73.7045],
+                center: [15.6870, 73.7030], // shifted west
                 zoom: 15,
                 waveZones: [
-                    {lat:15.6885, lng:73.7025, color:"#22c55e", radius:500, type:"Prime"},
-                    {lat:15.6855, lng:73.7060, color:"#eab308", radius:450, type:"Good"}
+                    {lat:15.6885, lng:73.7005, color:"#22c55e", radius:480, type:"Prime"},
+                    {lat:15.6855, lng:73.7040, color:"#eab308", radius:430, type:"Good"}
                 ],
                 dangerZones: [
-                    {lat:15.6905, lng:73.6995, color:"#ef4444", radius:180, info:"Rocks near elevated shops – dangerous at low tide"}
+                    {lat:15.6905, lng:73.6990, color:"#ef4444", radius:180, info:"Rocks near elevated shops"}
                 ]
             },
             "Ashwem Beach": {
-                center: [15.6355, 73.7010],
+                center: [15.6365, 73.7000],
                 zoom: 16,
                 waveZones: [
-                    {lat:15.6350, lng:73.6995, color:"#22c55e", radius:450},
-                    {lat:15.6370, lng:73.7030, color:"#eab308", radius:400}
+                    {lat:15.6360, lng:73.6985, color:"#22c55e", radius:400, type:"Prime"},
+                    {lat:15.6380, lng:73.7010, color:"#eab308", radius:350, type:"Good"}
                 ],
                 dangerZones: [
-                    {lat:15.6400, lng:73.6975, color:"#ef4444", radius:200, info:"River mouth – strong backwash"}
+                    {lat:15.6405, lng:73.6960, color:"#ef4444", radius:200, info:"River mouth – strong backwash"}
                 ]
             },
             "Mandrem Beach": {
-                center: [15.6505, 73.7100],
+                center: [15.6505, 73.7090],
                 zoom: 15,
                 waveZones: [
-                    {lat:15.6510, lng:73.7085, color:"#22c55e", radius:500}
+                    {lat:15.6510, lng:73.7075, color:"#22c55e", radius:480, type:"Prime"},
+                    {lat:15.6490, lng:73.7105, color:"#eab308", radius:400, type:"Good"}
                 ],
                 dangerZones: [
-                    {lat:15.6535, lng:73.7065, color:"#ef4444", radius:220, info:"Estuary back current – dangerous on outgoing tide"}
+                    {lat:15.6535, lng:73.7055, color:"#ef4444", radius:220, info:"Estuary back current"}
                 ]
             },
             "Baga / Calangute": {
-                center: [15.5555, 73.7495],
+                center: [15.5555, 73.7480],
                 zoom: 14,
                 waveZones: [
-                    {lat:15.5530, lng:73.7470, color:"#eab308", radius:600},
-                    {lat:15.5580, lng:73.7520, color:"#22c55e", radius:450}
+                    {lat:15.5530, lng:73.7455, color:"#eab308", radius:580},
+                    {lat:15.5580, lng:73.7505, color:"#22c55e", radius:450}
                 ],
                 dangerZones: [
-                    {lat:15.5505, lng:73.7445, color:"#ef4444", radius:280, info:"Jet ski lane + high crowd density"}
+                    {lat:15.5545, lng:73.7470, color:"#ef4444", radius:250, info:"Jet ski lane – high crowd density"}
                 ]
             },
             "Candolim Beach": {
-                center: [15.5167, 73.7667],
+                center: [15.5167, 73.7655], // shifted west from 73.7667
                 zoom: 15,
                 waveZones: [
-                    {lat:15.5160, lng:73.7650, color:"#eab308", radius:550},
-                    {lat:15.5190, lng:73.7685, color:"#f97316", radius:450}
+                    {lat:15.5160, lng:73.7640, color:"#eab308", radius:520},
+                    {lat:15.5190, lng:73.7675, color:"#f97316", radius:430}
                 ],
                 dangerZones: [
-                    {lat:15.5130, lng:73.7630, color:"#ef4444", radius:250, info:"Water sports traffic zone"}
+                    {lat:15.5130, lng:73.7615, color:"#ef4444", radius:240, info:"Water sports traffic zone"}
                 ]
             },
             "Sinquerim Beach": {
-                center: [15.4915, 73.7715],
+                center: [15.4915, 73.7700], // moved west
                 zoom: 15,
                 waveZones: [
-                    {lat:15.4910, lng:73.7700, color:"#eab308", radius:500}
+                    {lat:15.4910, lng:73.7685, color:"#eab308", radius:500}
                 ],
                 dangerZones: [
-                    {lat:15.4935, lng:73.7730, color:"#ef4444", radius:200, info:"Tourist boat anchoring – collision risk"}
+                    {lat:15.4935, lng:73.7715, color:"#ef4444", radius:200, info:"Tourist boat anchoring – collision risk"}
                 ]
             },
             "Vagator Beach": {
-                center: [15.5975, 73.7385],
+                center: [15.5975, 73.7370], // shifted west
                 zoom: 15,
                 waveZones: [
-                    {lat:15.5980, lng:73.7370, color:"#22c55e", radius:500}
+                    {lat:15.5980, lng:73.7355, color:"#22c55e", radius:500}
                 ],
                 dangerZones: [
-                    {lat:15.6005, lng:73.7345, color:"#ef4444", radius:180, info:"Submerged rocks – sharp edges"}
+                    {lat:15.6005, lng:73.7330, color:"#ef4444", radius:180, info:"Submerged rocks"}
                 ]
             },
             "Anjuna Beach": {
-                center: [15.5765, 73.7430],
+                center: [15.5765, 73.7415], // shifted west
                 zoom: 15,
                 waveZones: [
-                    {lat:15.5755, lng:73.7415, color:"#eab308", radius:550}
+                    {lat:15.5755, lng:73.7400, color:"#eab308", radius:530}
                 ],
                 dangerZones: [
-                    {lat:15.5790, lng:73.7450, color:"#ef4444", radius:220, info:"Strong rip current channel"}
+                    {lat:15.5790, lng:73.7435, color:"#ef4444", radius:220, info:"Rip current channel"}
                 ]
             },
             "Agonda Beach": {
-                center: [15.0580, 73.9915],
+                center: [15.0580, 73.9895], // shifted west from 73.9915
                 zoom: 16,
                 waveZones: [
-                    {lat:15.0570, lng:73.9900, color:"#22c55e", radius:550}
+                    {lat:15.0570, lng:73.9880, color:"#22c55e", radius:520}
                 ],
                 dangerZones: [
-                    {lat:15.0620, lng:73.9875, color:"#ef4444", radius:250, info:"Southern river mouth – back currents"}
+                    {lat:15.0620, lng:73.9855, color:"#ef4444", radius:240, info:"Southern river mouth – back currents"}
                 ]
             },
             "Colva Beach": {
-                center: [15.2795, 73.9245],
+                center: [15.2795, 73.9225], // shifted west from 73.9245
                 zoom: 15,
                 waveZones: [
-                    {lat:15.2780, lng:73.9225, color:"#eab308", radius:550},
-                    {lat:15.2820, lng:73.9260, color:"#f97316", radius:450}
+                    {lat:15.2780, lng:73.9205, color:"#eab308", radius:520},
+                    {lat:15.2820, lng:73.9240, color:"#f97316", radius:430}
                 ],
                 dangerZones: [
-                    {lat:15.2745, lng:73.9200, color:"#ef4444", radius:200, info:"Rip currents near rock outcrop"}
+                    {lat:15.2745, lng:73.9180, color:"#ef4444", radius:200, info:"Rip near rock outcrop"}
                 ]
             },
             "Varca Beach": {
-                center: [15.2185, 73.9400],
+                center: [15.2185, 73.9380], // shifted west from 73.9400
                 zoom: 15,
                 waveZones: [
-                    {lat:15.2170, lng:73.9385, color:"#eab308", radius:550}
+                    {lat:15.2170, lng:73.9365, color:"#eab308", radius:520}
                 ],
                 dangerZones: [
-                    {lat:15.2210, lng:73.9420, color:"#ef4444", radius:220, info:"River mouth influence"}
+                    {lat:15.2210, lng:73.9400, color:"#ef4444", radius:220, info:"River mouth influence"}
                 ]
             },
             "Galgibaga Beach": {
-                center: [15.0220, 74.0075],
+                center: [15.0220, 74.0055], // shifted west from 74.0075
                 zoom: 16,
                 waveZones: [
-                    {lat:15.0210, lng:74.0060, color:"#22c55e", radius:500}
+                    {lat:15.0210, lng:74.0040, color:"#22c55e", radius:500}
                 ],
                 dangerZones: [
-                    {lat:15.0250, lng:74.0100, color:"#ef4444", radius:180, info:"Turtle nesting zone – no entry Nov-Mar"}
+                    {lat:15.0250, lng:74.0080, color:"#ef4444", radius:180, info:"Turtle nesting zone – no entry Nov-Mar"}
                 ]
             },
             "Cola Beach": {
-                center: [15.1080, 74.0095],
+                center: [15.1080, 74.0075], // shifted west from 74.0095 – major fix
                 zoom: 16,
                 waveZones: [
-                    {lat:15.1070, lng:74.0080, color:"#eab308", radius:450}
+                    {lat:15.1070, lng:74.0060, color:"#eab308", radius:450}
                 ],
                 dangerZones: [
-                    {lat:15.1110, lng:74.0120, color:"#ef4444", radius:150, info:"Steep access path – dangerous at high tide"}
+                    {lat:15.1110, lng:74.0095, color:"#ef4444", radius:150, info:"Steep access path"}
                 ]
             },
             "Palolem Beach": {
-                center: [15.0095, 74.0245],
+                center: [15.0095, 74.0225], // shifted west from 74.0245
                 zoom: 16,
                 waveZones: [
-                    {lat:15.0090, lng:74.0230, color:"#eab308", radius:550}
+                    {lat:15.0090, lng:74.0210, color:"#eab308", radius:520}
                 ],
                 dangerZones: [
-                    {lat:15.0045, lng:74.0280, color:"#ef4444", radius:200, info:"Rocks at low tide – sharp edges"}
+                    {lat:15.0045, lng:74.0260, color:"#ef4444", radius:200, info:"Rocks at low tide"}
                 ]
             }
         };
@@ -277,7 +278,7 @@
                     fillColor: zone.color,
                     fillOpacity: 0.4,
                     radius: zone.radius
-                }).bindPopup(`<b>🌊 Wave Quality:</b> ${zone.type || 'Zone'}`).addTo(map);
+                }).bindPopup(`<b>🌊 Wave:</b> ${zone.type || 'Zone'}`).addTo(map);
                 currentOverlays.push(circle);
             });
 
@@ -308,8 +309,8 @@
     </script>
 
     <div class="disclaimer">
-        <strong>Disclaimer:</strong> Heatmaps show specific hazard zones (small red circles). Always verify on-site. Conditions change.<br>
-        <strong>Last Updated:</strong> May 07, 2026 – danger radii reduced to 150-350m, precise to actual hazards.
+        <strong>Disclaimer:</strong> Heatmaps show specific hazard zones. All circles positioned to touch the beach with 2/3 over water.<br>
+        <strong>Last Updated:</strong> May 07, 2026 – all inland circles corrected.
     </div>
 </body>
 </html>
